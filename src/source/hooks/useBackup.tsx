@@ -12,11 +12,11 @@ export const useBackup = (): UseBackupProps => {
   const [isImporting, setIsImporting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const exportData = () => {
+  const exportData = async () => {
     setError(null);
 
     try {
-      exportSeriesState();
+      await exportSeriesState();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Export failed');
     }

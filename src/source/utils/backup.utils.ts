@@ -2,6 +2,7 @@ import { SERIES_STORAGE_NAME } from '@/constants';
 import { useSeriesStore } from '@/store';
 import { StorageSchema } from '@/zod-schemas';
 import { getBackupTime } from './time.utils';
+import { chromeStorage } from './storage.utils';
 
 const readBackupFile = (file: Blob, resolve: () => void, reject: (err: Error) => void): void => {
   const reader = new FileReader();
@@ -29,7 +30,7 @@ const readBackupFile = (file: Blob, resolve: () => void, reject: (err: Error) =>
 
       if (!store) return;
 
-      localStorage.setItem(SERIES_STORAGE_NAME, raw);
+      chromeStorage.setItem(SERIES_STORAGE_NAME, raw);
 
       await store.rehydrate();
 
@@ -50,9 +51,9 @@ const readBackupFile = (file: Blob, resolve: () => void, reject: (err: Error) =>
  * Export data from store to external file
  * Sync
  */
-export const exportSeriesState = (): void => {
+export const exportSeriesState = async (): Promise<void> => {
   try {
-    const rawData = localStorage.getItem(SERIES_STORAGE_NAME);
+    const rawData = await chromeStorage.getItem(SERIES_STORAGE_NAME);
 
     if (!rawData) return;
 
@@ -72,7 +73,7 @@ export const exportSeriesState = (): void => {
 };
 
 /**
- * Import data from external file to the LocalStorage
+ * Import data from external file to the chromeStorage
  * Rehydrate store
  * Async
  */
