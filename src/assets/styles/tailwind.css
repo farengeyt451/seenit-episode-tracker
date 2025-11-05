@@ -1,11 +1,133 @@
-@import "tailwindcss";
+@import 'tailwindcss';
+
+@custom-variant light (&:where([data-theme=light], [data-theme=light] *));
 
 @theme {
-    --animate-spin-slow: spin 20s linear infinite;
+  --spacing-extension-width: --spacing(120);
+  --spacing-extension-height: --spacing(150);
+  --spacing-sidebar-width: --spacing(75);
+  --spacing-height-header: --spacing(18);
+}
 
-    @keyframes spin {
-        to {
-            transform: rotate(360deg);
-        }
+@layer base {
+  :root {
+    font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+    color-scheme: light dark;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  @keyframes seenit-gradient {
+    0%,
+    100% {
+      background-position: 0% 50%;
     }
+    50% {
+      background-position: 100% 50%;
+    }
+  }
+
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0) rotate(0deg);
+    }
+    50% {
+      transform: translateY(-15px) rotate(2deg);
+    }
+  }
+
+  @keyframes emerge {
+    0% {
+      opacity: 0;
+    }
+
+    100% {
+      opacity: 1;
+    }
+  }
+
+  @keyframes indeterminate {
+    0% {
+      transform: translateX(-100%) scaleX(1);
+    }
+    70% {
+      transform: translateX(100%) scaleX(1);
+    }
+    100% {
+      transform: translateX(100%) scaleX(1);
+    }
+  }
+
+  @keyframes indeterminate-short {
+    0% {
+      transform: translateX(-100%) scaleX(1);
+    }
+    60% {
+      transform: translateX(100%) scaleX(0.01);
+    }
+    100% {
+      transform: translateX(100%) scaleX(0.01);
+    }
+  }
+}
+
+@layer components {
+  .seenit-animated-title {
+    background: linear-gradient(90deg, #2b7fff, #a78bfa, #f472b6, #2b7fff);
+    background-size: 200% 200%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: seenit-gradient 10s cubic-bezier(0.68, -0.6, 0.32, 1.6) infinite;
+  }
+
+  [data-theme='light'] .seenit-animated-title {
+    background: linear-gradient(90deg, #2b62ff, #846ec6, #c15a8f, #2265cc);
+    background-size: 200% 200%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: seenit-gradient 10s cubic-bezier(0.68, -0.6, 0.32, 1.6) infinite;
+  }
+
+  .seenit-animated-info-block {
+    will-change: transform, opacity;
+    animation:
+      float 6s ease-in-out infinite,
+      emerge 0.5s ease-in-out;
+  }
+
+  .animate-indeterminate {
+    transform: translateX(-100%) scaleX(1);
+    transform-origin: left;
+    animation: indeterminate 2.1s cubic-bezier(0.65, 0.815, 0.735, 0.395) infinite;
+  }
+
+  .animate-indeterminate-short {
+    transform: translateX(-100%) scaleX(1);
+    transform-origin: left;
+    animation: indeterminate-short 2.1s cubic-bezier(0.165, 0.84, 0.44, 1) infinite;
+    animation-delay: 1.15s;
+  }
+}
+
+@layer utilities {
+  .scrollbar-gutter-stable {
+    scrollbar-gutter: stable;
+  }
+
+  .scrollbar-gutter-both-edges {
+    scrollbar-gutter: stable both-edges;
+  }
+
+  .tv-glow {
+    filter: drop-shadow(0 0 4px #38bdf8);
+  }
+
+  [data-theme='light'] .tv-glow {
+    filter: drop-shadow(0 0 0 #38bdf8);
+  }
 }

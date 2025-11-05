@@ -14,15 +14,31 @@
     "ecmaFeatures": {
       "jsx": true
     },
-    "ecmaVersion": "latest",
+    "ecmaVersion": 2020,
     "sourceType": "module"
   },
-  "plugins": ["react", "@typescript-eslint"],
+  "plugins": [
+    "react",
+    "@typescript-eslint",
+    "react-hooks",
+    "react-refresh"
+  ],
   "rules": {
-    "react/react-in-jsx-scope": "off"
+    "react/react-in-jsx-scope": "off",
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn",
+    "react-refresh/only-export-components": [
+      "warn",
+      {
+        "allowConstantExport": true
+      }
+    ]
   },
   "globals": {
     "chrome": "readonly"
   },
-  "ignorePatterns": ["watch.js", "dist/**"]
+  "ignorePatterns": [
+    "dist/**",
+    "watch.js"
+  ]
 }

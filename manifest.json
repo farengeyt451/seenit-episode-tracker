@@ -2,14 +2,14 @@
   "manifest_version": 3,
   "name": "Seenit! — Episode Tracker",
   "description": "Keep track of your favorite series and episodes with a simple, cozy interface. Works offline and supports dark/light themes.",
+  "version": "1.0.0",
+  "permissions": [
+    "storage"
+  ],
   "action": {
     "default_popup": "src/pages/popup/index.html",
     "default_icon": {
       "32": "icon-32.png"
     }
-  },
-  "icons": {
-    "128": "icon-128.png"
-  },
-  "permissions": []
+  }
 }

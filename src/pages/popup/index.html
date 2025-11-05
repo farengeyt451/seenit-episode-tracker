@@ -1,12 +1,23 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8" />
-        <title>Popup</title>
-    </head>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Seenit! — Episode Tracker</title>
+  </head>
 
-    <body>
-        <div id="__root"></div>
-        <script type="module" src="./index.tsx"></script>
-    </body>
+  <body style="font-size: 1rem">
+    <div
+      id="headlessui-portal-root"
+      class="h-extension-height w-extension-width relative mx-auto overflow-hidden"
+    >
+      <div
+        id="__root"
+        class="h-full w-full"
+      ></div>
+    </div>
+    <script
+      type="module"
+      src="./index.tsx"
+    ></script>
+  </body>
 </html>
