@@ -22,7 +22,6 @@ export const Header = memo((): JSX.Element => {
   );
 
   const isDarkTheme = theme === Theme.Dark;
-  console.log('🚀[Header.tsx:25]: isDarkTheme: ', isDarkTheme);
 
   const handleToggleTheme = () => {
     setTheme(theme === Theme.Light ? Theme.Dark : Theme.Light);
