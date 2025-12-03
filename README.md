@@ -1,181 +1,256 @@
 <div align="center">
-<img src="public/icon-128.png" alt="logo"/>
-<h1> Minimalist Chrome/Firefox Extension Boilerplate with<br/>React + Vite + TypeScript + TailwindCSS</h1>
+  <img src="public/icon-128.png" alt="Seenit! Logo" width="120" height="120"/>
 
-<h5>
-This template repository is a side product of my Chrome Extension <a target="_blank" rel="noopener noreferrer" href="https://chrome.google.com/webstore/detail/supatabs/icbcnjlaegndjabnjbaeihnnmidbfigk">Supatabs</a>.
-<br />
-If you tend to have tons of tabs open, or are a OneTab user, make sure to check it out <a target="_blank" rel="noopener noreferrer" href="https://chrome.google.com/webstore/detail/supatabs/icbcnjlaegndjabnjbaeihnnmidbfigk">here</a>!
-</h5>
+# 🎬 Seenit! - Episode Tracker
 
-<h5>Supatabs is an example and showcase of what you can develop with this template. (anything you want, really 🚀)</h5>
+  <p align="center">
+    <strong>Your personal series companion that lives in your browser</strong>
+    <br />
+    Keep track of your favorite TV shows with a beautiful, intuitive interface
+  </p>
 
+  <p align="center">
+    <img src="https://img.shields.io/badge/React-19-61DAFB?style=flat&logo=react&logoColor=white" alt="React 19" />
+    <img src="https://img.shields.io/badge/TypeScript-5.9-3178C6?style=flat&logo=typescript&logoColor=white" alt="TypeScript" />
+    <img src="https://img.shields.io/badge/Tailwind-4.1-38B2AC?style=flat&logo=tailwind-css&logoColor=white" alt="Tailwind CSS" />
+    <img src="https://img.shields.io/badge/Vite-7.1-646CFF?style=flat&logo=vite&logoColor=white" alt="Vite" />
+    <img src="https://img.shields.io/badge/License-MIT-green.svg" alt="MIT License" />
+  </p>
+
+  <p align="center">
+    <a href="#-features">Features</a> •
+    <a href="#-installation">Installation</a> •
+    <a href="#-development">Development</a> •
+    <a href="#-tech-stack">Tech Stack</a> •
+    <a href="#-license">License</a>
+  </p>
 </div>
 
-## Table of Contents
+---
 
-- [Intro](#intro)
-- [Features](#features)
-- [Usage](#usage)
-  - [Getting Started](#gettingStarted) 
-  - [Customization](#customization)
-  - [Publish](#publish)
-- [Tech Docs](#tech)
-- [Credit](#credit)
-- [Contributing](#contributing)
+## ✨ Features
 
+### 🎯 Core Functionality
 
-## Intro <a name="intro"></a>
-This boilerplate is meant to be a minimal quick start for creating chrome/firefox extensions using React, Typescript and Tailwind CSS.
+- **Series Tracking** - Add and track multiple TV series with complete metadata
+- **Progress Monitoring** - Visual progress bars for seasons and episodes
+- **Episode Management** - Mark episodes as watched/unwatched with a single click
+- **Favorites System** - Star your favorite series for quick access
+- **Smart Search** - Search for new series to track
+- **Filter & Sort** - Filter series by title or genre
 
-It includes all possible pages such as **new tab**, **dev panel**, **pop up**, etc., as well as corresponding manifest settings by default.
-You will likely have to customize/delete some of the pages (see docs below).
+### 💾 Data Management
 
-You can build dist files for both Chrome and Firefox with manifest v3.
+- **100% Local Storage** - All data stored locally using Chrome Storage API
+- **Export/Import** - Backup and restore your tracking data
+- **Auto-Refresh** - Keep series metadata up to date
+- **Completion Rewards** - Celebrate when you finish a series!
 
-If you are looking for a React focused way to access the local storage, I also implemented a chrome local/sync storage hook. The hook works
-well with this template. [Check it out here](https://gist.github.com/JohnBra/c81451ea7bc9e77f8021beb4f198ab96).
+### 🎨 User Experience
 
-## Features <a name="features"></a>
-- [React 19](https://reactjs.org/)
-- [TypeScript](https://www.typescriptlang.org/)
-- [Tailwind CSS 4](https://tailwindcss.com/)
-- [i18n (optional)](https://developer.chrome.com/docs/extensions/reference/api/i18n)
-- [Cross browser development with polyfill (optional)](https://github.com/mozilla/webextension-polyfill?tab=readme-ov-file#basic-setup-with-module-bundlers)
-- [ESLint](https://eslint.org/)
-- [Chrome Extension Manifest Version 3](https://developer.chrome.com/docs/extensions/mv3/intro/)
-- [Github Action](https://github.com/JohnBra/vite-web-extension/actions/workflows/ci.yml) to build and zip your extension (manual trigger)
+- **Dark/Light Themes** - Automatic theme switching
+- **Responsive Design** - Optimized for popup interface
+- **Lightning Fast** - Built with modern web technologies
+- **No Authentication** - Works completely offline, no account needed
 
-## Usage <a name="usage"></a>
+---
 
-### Getting Started <a name="gettingStarted"></a>
+## 🚀 Installation
 
-#### Developing and building
-This template comes with build configs for both Chrome and Firefox. Running
-`dev` or `build` commands without specifying the browser target will build
-for Chrome by default.
+### Install from Store
 
-1. Clone this repository or click "Use this template"
-2. Change `name` and `description` in `manifest.json`
-3. Run `yarn` or `npm i` (check your node version >= 16)
-4. Run `yarn dev[:chrome|:firefox]`, or `npm run dev[:chrome|:firefox]`
+> Coming soon to Chrome Web Store and Firefox Add-ons
 
-Running a `dev` command will build your extension and watch for changes in the 
-source files. Changing the source files will refresh the corresponding 
-`dist_<chrome|firefox>` folder.
+### Install Manually
 
-To create an optimized production build, run `yarn build[:chrome|:firefox]`, or
-`npm run build[:chrome|:firefox]`.
+#### For Chrome
 
-#### Load your extension
-For Chrome
-1. Open - Chrome browser
-2. Access - [chrome://extensions](chrome://extensions)
-3. Tick - Developer mode
-4. Find - Load unpacked extension
-5. Select - `dist_chrome` folder in this project (after dev or build)
+1. Download the latest release or build from source
+2. Open Chrome and navigate to `chrome://extensions`
+3. Enable "Developer mode" (toggle in top-right)
+4. Click "Load unpacked"
+5. Select the `dist_chrome` folder
 
-For Firefox
-1. Open - Firefox browser
-2. Access - [about:debugging#/runtime/this-firefox](about:debugging#/runtime/this-firefox)
-3. Click - Load temporary Add-on
-4. Select - any file in `dist_firefox` folder (i.e. `manifest.json`) in this project (after dev or build)
+#### For Firefox
 
-### Customization <a name="customization"></a>
+1. Download the latest release or build from source
+2. Open Firefox and navigate to `about:debugging#/runtime/this-firefox`
+3. Click "Load Temporary Add-on"
+4. Select any file in the `dist_firefox` folder (e.g., `manifest.json`)
 
-#### Adding / removing pages
-The template includes source code for **all** of the extension pages (i.e. New Tab, Dev Tools, Popup, Side Panel
-etc.). You will likely have to customize it to fit your needs.
+---
 
-E.g. you don't want the newtab page to activate whenever you open a new tab:
-1. remove the directory `newtab` and its contents in `src/pages`
-2. remove `chrome_url_overrides: { newtab: 'src/pages/newtab/index.html' },` in `manifest.json`
+## 💻 Development
 
-Some pages like the "Side Panel" don't work the exact same in Chrome and Firefox. While this template includes
-the source code for the side panel, it won't automatically be included in the dist file to prevent cross browser
-build warnings.
+### Prerequisites
 
-To include the side panel for Chrome add the following to the `manifest.json`:
+- Node.js >= 24
+- npm
 
-```typescript
-{
-  "manifest_version": 3,
-  // ...
-  "permissions": [
-    "activeTab",
-    "sidePanel" // <-- permission for sidepanel
-  ],
-  // ...
-  "side_panel": {
-    "default_path": "src/pages/panel/index.html" // <-- tell vite to include it in the build files
-  },
-  // ...
-}
+### Setup
+
+```bash
+# Clone the repository
+git clone https://github.com/farengeyt451/seenit-extension.git
+cd seenit-extension
+
+# Install dependencies
+npm install
+# or
+yarn install
 ```
 
-If you need to declare pages in addition to the manifest pages, e.g. a custom `app` page, create a 
-new folder in the `pages` directory and add the corresponding `.html`, `.tsx` and `.css` 
-files (see `options/*` for an example to copy). Then include the root html in the `vite.config.base.ts` 
-file under `build.rollupOptions.input` like so:
+### Development Mode
 
-```typescript
-// ...
-build: {
-   rollupOptions: {
-      input: {
-         app: resolve(pagesDir, "app", "index.html"),
-      },
-      output: {
-         entryFileNames: (chunk) => `src/pages/${chunk.name}/index.js`,
-      },
-   },
-}
-// ...
+```bash
+# Start development for Chrome (with hot reload)
+npm run dev:chrome
+
+# Start development for Firefox (with hot reload)
+npm run dev:firefox
 ```
 
-#### Styling
-CSS files in the `src/pages/*` directories are not necessary. They are left in there in case you want 
-to use it in combination with Tailwind CSS. **Feel free to delete them**.
+### Build for Production
 
-Tailwind can be configured, themed and extended according to the [docs](https://tailwindcss.com/docs/theme).
+```bash
+# Build for Chrome
+npm run build:chrome
 
-#### Internationalization (i18n)
-To enable internationalization set the `localize` flag in the `vite.config.base.ts` to `true`.
+# Build for Firefox
+npm run build:firefox
+```
 
-The template includes a directory `locales` with a basic setup for english i18n. Enabling i18n
-will pull the name and description for your extension from the english translation files instead
-of the manifest.
+Output will be in `dist_chrome` or `dist_firefox` folders.
 
-Follow the instructions in the [official docs](https://developer.chrome.com/docs/extensions/reference/api/i18n#description) 
-to add other translations and retrieve them in the extension.
+---
 
-If you don't need i18n you can ignore the `locales` directory until you need it, as it won't
-be copied into the build folder unless the `localize` flag is set to `true`.
+## 🛠 Tech Stack
 
-### Publish your extension to the CWS<a name="publish"></a>
-To upload an extension to the Chrome store you have to pack (zip) it and then upload it to your item 
-in the Chrome Web Store.
+### Core Technologies
 
-This repo includes a Github Action Workflow to create a 
-[optimized prod build and the zip file](https://github.com/JohnBra/vite-web-extension/actions/workflows/ci.yml).
+- **[React 19](https://react.dev/)** - UI library with latest features
+- **[TypeScript 5.9](https://www.typescriptlang.org/)** - Type-safe JavaScript
+- **[Vite 7.1](https://vitejs.dev/)** - Lightning-fast build tool
+- **[Tailwind CSS 4.1](https://tailwindcss.com/)** - Utility-first styling
 
-To run the workflow do the following:
-1. Go to the **"Actions"** tab in your forked repository from this template
-2. In the left sidebar click on **"Build and Zip Chrome Extension"**
-3. Click on **"Run Workflow"** and select the main branch, then **"Run Workflow"**
-4. Refresh the page and click the most recent run
-5. In the summary page **"Artifacts"** section click on the generated **"vite-web-extension-chrome"**
-6. Upload this file to the Chrome Web Store as described [here](https://developer.chrome.com/docs/webstore/publish/)
+### State Management & Data
 
-# Tech Docs <a name="tech"></a>
-- [Vite](https://vitejs.dev/)
-- [Vite Plugins](https://vitejs.dev/guide/api-plugin.html)
-- [Chrome Extension with manifest 3](https://developer.chrome.com/docs/extensions/mv3/)
-- [Chrome Extension i18n](https://developer.chrome.com/docs/extensions/reference/api/i18n#description)
-- [Cross browser development with webextension-polyfill](https://github.com/mozilla/webextension-polyfill?tab=readme-ov-file#webextension-browser-api-polyfill)
-- [@crxjs/vite-plugin](https://crxjs.dev/vite-plugin)
-- [Rollup](https://rollupjs.org/guide/en/)
-- [Tailwind CSS 4](https://tailwindcss.com/docs/configuration)
+- **[Zustand 5.0](https://github.com/pmndrs/zustand)** - Lightweight state management
+- **[Immer 10.2](https://immerjs.github.io/immer/)** - Immutable state updates
+- **[Zod 4.1](https://zod.dev/)** - TypeScript-first schema validation
+- **Chrome Storage API** - Local data persistence
 
-# Contributing <a name="contributing"></a>
-Feel free to open PRs or raise issues!
+### UI Components
+
+- **[Headless UI 2.2](https://headlessui.com/)** - Unstyled, accessible components
+- **[Heroicons 2.2](https://heroicons.com/)** - Beautiful hand-crafted icons
+- **[React Rewards 2.1](https://github.com/thedevelobear/react-rewards)** - Celebration animations
+
+### Utilities
+
+- **[Luxon 3.7](https://moment.github.io/luxon/)** - Modern date handling
+- **[Axios 1.13](https://axios-http.com/)** - HTTP client
+- **[@uidotdev/usehooks](https://usehooks.com/)** - Collection of React hooks
+- **[clsx 2.1](https://github.com/lukeed/clsx)** - Conditional classNames
+
+### Development Tools
+
+- **[@crxjs/vite-plugin](https://crxjs.dev/vite-plugin/)** - Vite plugin for browser extensions
+- **[ESLint 9](https://eslint.org/)** - Code linting
+- **[Prettier 3.6](https://prettier.io/)** - Code formatting
+- **[Nodemon 3.1](https://nodemon.io/)** - Auto-reload for development
+
+---
+
+## 📁 Project Structure
+
+```
+seenit-extension/
+├── public/               # Static assets (icons)
+├── src/
+│   ├── components/       # React components
+│   │   ├── ui/          # Reusable UI components
+│   │   ├── episodes-tracker/
+│   │   ├── search/
+│   │   └── ...
+│   ├── store/           # Zustand stores
+│   │   ├── useSeriesStore.ts
+│   │   ├── useThemeStore.ts
+│   │   └── ...
+│   ├── hooks/           # Custom React hooks
+│   ├── utils/           # Utility functions
+│   ├── types/           # TypeScript types
+│   ├── enums/           # Enums and constants
+│   └── pages/
+│       ├── popup/       # Main extension popup
+│       └── background/  # Background script (optional)
+├── manifest.json        # Extension manifest
+├── vite.config.*.ts     # Vite configurations
+└── package.json
+```
+
+---
+
+## 🎨 Features Showcase
+
+### Episode Tracking
+
+Track your progress through series with intuitive visual indicators:
+
+- Season-by-season breakdown
+- Episode completion tracking
+- Progress bars for visual feedback
+
+### Search & Discovery
+
+Find new series to track with integrated search:
+
+- Real-time search results
+- Series metadata from TMDB
+- Add series with one click
+
+### Data Portability
+
+Your data belongs to you:
+
+- Export tracking data as JSON
+- Import backups anytime
+- No vendor lock-in
+
+---
+
+## 📝 License
+
+This project is licensed under the **Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License**.
+
+**You are free to:**
+
+- ✅ Share and redistribute the code
+- ✅ Modify and build upon it
+- ✅ Use it for personal and educational purposes
+
+**Under the following terms:**
+
+- 🚫 **No Commercial Use** — You may not use this work for commercial purposes
+- 📝 **Attribution** — You must give appropriate credit and link to the license
+- 🔄 **ShareAlike** — If you modify the code, you must distribute it under the same license
+
+For more details, see the [LICENSE](LICENSE) file or visit [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/).
+
+---
+
+## 🙏 Acknowledgments
+
+- Built with the [Vite Web Extension Boilerplate](https://github.com/JohnBra/vite-web-extension) by Jonathan Braat
+- Series metadata powered by [TMDB API](https://www.themoviedb.org/)
+- Icons by [Heroicons](https://heroicons.com/)
+
+---
+
+<div align="center">
+  <p>Made with ❤️ for TV series enthusiasts</p>
+  <p>
+    <a href="https://github.com/farengeyt451/seenit-extension/issues">Report Bug</a> •
+    <a href="https://github.com/farengeyt451/seenit-extension/issues">Request Feature</a>
+  </p>
+</div>
