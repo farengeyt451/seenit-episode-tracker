@@ -13,6 +13,7 @@
     "build:firefox": "vite build --config vite.config.firefox.ts",
     "dev": "nodemon --config nodemon.chrome.json",
     "dev:chrome": "nodemon --config nodemon.chrome.json",
+    "dev:chrome:prod": "nodemon --config nodemon.chrome.json -- --mode production",
     "dev:firefox": "nodemon --config nodemon.firefox.json"
   },
   "type": "module",
