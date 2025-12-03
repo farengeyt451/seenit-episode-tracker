@@ -14,7 +14,7 @@
     <img src="https://img.shields.io/badge/TypeScript-5.9-3178C6?style=flat&logo=typescript&logoColor=white" alt="TypeScript" />
     <img src="https://img.shields.io/badge/Tailwind-4.1-38B2AC?style=flat&logo=tailwind-css&logoColor=white" alt="Tailwind CSS" />
     <img src="https://img.shields.io/badge/Vite-7.1-646CFF?style=flat&logo=vite&logoColor=white" alt="Vite" />
-    <img src="https://img.shields.io/badge/License-MIT-green.svg" alt="MIT License" />
+    <img src="https://img.shields.io/badge/License-CC_BY--NC--SA_4.0-lightgrey.svg" alt="CC BY-NC-SA 4.0 License" />
   </p>
 
   <p align="center">
