@@ -29,7 +29,7 @@
     "react-dom": "^19.2.0",
     "react-rewards": "^2.1.0",
     "react": "^19.2.0",
-    "tailwindcss": "^4.1.16",
+    "tailwindcss": "^4.1.17",
     "webextension-polyfill": "^0.12.0",
     "zod": "^4.1.12",
     "zustand": "^5.0.8"
@@ -59,7 +59,7 @@
     "nodemon": "^3.1.10",
     "prettier-plugin-tailwindcss": "^0.7.1",
     "prettier": "^3.6.2",
-    "tailwindcss": "^4.1.16",
+    "tailwindcss": "^4.1.17",
     "ts-node": "^10.9.2",
     "typescript-eslint": "^8.46.3",
     "typescript": "^5.9.3",
