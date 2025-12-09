@@ -14,7 +14,7 @@
     <img src="https://img.shields.io/badge/TypeScript-5.9-3178C6?style=flat&logo=typescript&logoColor=white" alt="TypeScript" />
     <img src="https://img.shields.io/badge/Tailwind-4.1-38B2AC?style=flat&logo=tailwind-css&logoColor=white" alt="Tailwind CSS" />
     <img src="https://img.shields.io/badge/Vite-7.1-646CFF?style=flat&logo=vite&logoColor=white" alt="Vite" />
-    <img src="https://img.shields.io/badge/License-CC_BY--NC--SA_4.0-lightgrey.svg" alt="CC BY-NC-SA 4.0 License" />
+    <img src="https://img.shields.io/badge/License-Proprietary-red.svg" alt="Source-Available, Non-Commercial License" />
   </p>
 
   <p align="center">
@@ -221,21 +221,25 @@ Your data belongs to you:
 
 ## 📝 License
 
-This project is licensed under the **Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License**.
+This project is **Source-Available** under a **Non-Commercial Proprietary License**.
 
-**You are free to:**
+**You are allowed to:**
 
-- ✅ Share and redistribute the code
-- ✅ Modify and build upon it
-- ✅ Use it for personal and educational purposes
+- ✅ View the source code
+- ✅ Modify it for personal, non-commercial use only
 
-**Under the following terms:**
+**You are NOT allowed to:**
 
-- 🚫 **No Commercial Use** — You may not use this work for commercial purposes
-- 📝 **Attribution** — You must give appropriate credit and link to the license
-- 🔄 **ShareAlike** — If you modify the code, you must distribute it under the same license
+- 🚫 Sell, license, redistribute, or publish this software or any modified versions
+- 🚫 Use any part of this software for commercial purposes
+- 🚫 Re-upload to any browser extension store without explicit written permission
+- 🚫 Reverse engineer premium features or server components
 
-For more details, see the [LICENSE](LICENSE) file or visit [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/).
+All rights not explicitly granted are reserved by the author.
+
+For commercial permissions or business inquiries, contact: **seenitapp@outlook.com**
+
+For more details, see the [LICENSE](LICENSE) file.
 
 ---
 
