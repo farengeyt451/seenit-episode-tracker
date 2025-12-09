@@ -4,7 +4,7 @@ import { useBackup } from '@/hooks';
 import { useLicenseStore, useSeriesStore } from '@/store';
 import { Nullable } from '@/utility-types';
 import { Button, Dialog, DialogPanel, DialogTitle, Field } from '@headlessui/react';
-import { BackspaceIcon } from '@heroicons/react/24/outline';
+import { BackspaceIcon, ExclamationCircleIcon } from '@heroicons/react/24/outline';
 import {
   ArrowDownTrayIcon,
   ArrowLeftIcon,
@@ -12,7 +12,6 @@ import {
   ArrowUpTrayIcon,
   CheckCircleIcon,
   Cog6ToothIcon,
-  ExclamationCircleIcon,
   XMarkIcon,
 } from '@heroicons/react/24/solid';
 import { clsx } from 'clsx';
@@ -60,7 +59,7 @@ export const SettingsDialog: FC = (): JSX.Element => {
       return <div className="size-5 animate-spin rounded-full border-2 border-blue-500 border-t-transparent" />;
     }
     if (importErrorMessage) {
-      return <ExclamationCircleIcon className="size-5 text-red-400" />;
+      return <ExclamationCircleIcon className="size-5 text-red-500" />;
     }
     if (isImportSuccess) {
       return <CheckCircleIcon className="size-5 text-green-400" />;
@@ -275,11 +274,11 @@ export const SettingsDialog: FC = (): JSX.Element => {
 
                       {activateLicenseErrorMessage && (
                         <div
-                          className={clsx('absolute bottom-0 flex items-start gap-2')}
+                          className={clsx('absolute bottom-0 flex items-center gap-2')}
                           role="alert"
                         >
-                          <ExclamationCircleIcon className="light:text-red-600 mt-0.5 size-4 shrink-0 text-red-400" />
-                          <p className="light:text-red-600 text-sm text-red-400">{activateLicenseErrorMessage}</p>
+                          <div className="light:text-red-600 mt-0.5 size-3 shrink-0 rounded-full bg-red-500"></div>
+                          <p className="light:text-red-600 text-sm text-red-500">{activateLicenseErrorMessage}</p>
                         </div>
                       )}
                     </div>
@@ -330,7 +329,7 @@ export const SettingsDialog: FC = (): JSX.Element => {
                             <p
                               className={clsx(
                                 'light:text-gray-600 font-medium',
-                                importErrorMessage && 'text-red-400',
+                                importErrorMessage && 'text-red-500',
                                 isImportSuccess && 'text-green-400',
                               )}
                             >

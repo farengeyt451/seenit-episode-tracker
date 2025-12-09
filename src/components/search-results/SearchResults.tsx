@@ -39,7 +39,7 @@ export const SearchResults: FC<SearchResultsProps> = ({ itemClick }): Nullable<J
     return (
       <InfoSearchBlock>
         <ErrorTVIcon />
-        <h3 className="light:text-red-600 mt-2 text-base font-semibold text-red-400">Something went wrong</h3>
+        <h3 className="light:text-red-600 mt-2 text-base font-semibold text-red-500">Something went wrong</h3>
         <p className="light:text-slate-700 mt-2 text-sm text-gray-400">Please try again</p>
       </InfoSearchBlock>
     );

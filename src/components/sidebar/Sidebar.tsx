@@ -275,7 +275,7 @@ export const Sidebar: FC = (): JSX.Element => {
           >
             <InfoSearchBlock>
               <ErrorTVIcon />
-              <h3 className="mt-2 text-base font-semibold text-red-400">Something went wrong</h3>
+              <h3 className="mt-2 text-base font-semibold text-red-500">Something went wrong</h3>
             </InfoSearchBlock>
             <SeenItButton onClick={handleTryAgain}>Try again</SeenItButton>
           </div>

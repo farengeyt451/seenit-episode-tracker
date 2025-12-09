@@ -27,7 +27,7 @@ export const SupportBlock: FC<SupportBlockProps> = ({ isActivated = false, succe
             'animate-in zoom-in delay-200 duration-700',
           )}
         >
-          <CheckCircleIcon className={clsx('size-4', 'animate-in spin-in-180 delay-300 duration-700')} />
+          <CheckCircleIcon className={clsx('size-5', 'animate-in spin-in-180 delay-300 duration-700')} />
           <span>All Features Unlocked!</span>
         </div>
         <p
