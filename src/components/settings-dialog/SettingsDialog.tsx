@@ -125,7 +125,7 @@ export const SettingsDialog: FC = (): JSX.Element => {
       >
         <Cog6ToothIcon
           data-tag="settings__icon"
-          className="size-5 duration-300 group-hover:rotate-35"
+          className="size-5 text-white duration-300 group-hover:rotate-35"
         />
       </Button>
 
