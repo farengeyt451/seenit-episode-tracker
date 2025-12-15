@@ -1,4 +1,4 @@
 export enum ToggleAllWatchedMode {
-  Complete = 'complete',
-  Reset = 'reset',
+  Complete = 'Complete',
+  Reset = 'Reset',
 }

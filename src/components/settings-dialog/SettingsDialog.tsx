@@ -302,7 +302,7 @@ export const SettingsDialog: FC = (): JSX.Element => {
                         <div className="flex items-center gap-3">
                           <ArrowDownTrayIcon className="size-5 text-green-400" />
                           <div className="text-left">
-                            <p className="light:text-gray-600 font-medium">Export Backup</p>
+                            <p className="light:text-gray-600 font-medium text-gray-100">Export Backup</p>
                             <p className="light:text-slate-600 text-sm text-gray-400">Save your series tracking data</p>
                           </div>
                         </div>
@@ -317,7 +317,7 @@ export const SettingsDialog: FC = (): JSX.Element => {
                         onClick={importData}
                         disabled={!isLicenseActivated}
                         className={clsx(
-                          'light:bg-slate-100 light:hover:bg-slate-200 flex w-full items-center justify-between rounded-lg bg-gray-700/50 p-3 transition-colors hover:bg-gray-700',
+                          'light:bg-slate-100 light:hover:bg-slate-200 flex w-full items-center justify-between rounded-lg bg-gray-700/50 p-3 text-gray-100 transition-colors hover:bg-gray-700',
                           'disabled:pointer-events-none disabled:opacity-50',
                           'cursor-pointer',
                           (isImportSuccess || isImporting) && 'pointer-events-none',

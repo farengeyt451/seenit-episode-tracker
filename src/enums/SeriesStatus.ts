@@ -1,6 +1,6 @@
 export enum SeriesStatus {
-  Running = 'running',
-  Ended = 'ended',
-  InDevelopment = 'in Development',
-  ToBeDetermined = 'to Be Determined',
+  Running = 'Running',
+  Ended = 'Ended',
+  InDevelopment = 'In Development',
+  ToBeDetermined = 'To Be Determined',
 }
