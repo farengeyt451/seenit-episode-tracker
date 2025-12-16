@@ -1,7 +1,7 @@
 {
   "name": "seenit-episode-tracker",
-  "version": "1.0.0",
-  "description": "The chrome & firefox extension to keep track of your favorite series and episodes with a simple, cozy interface. Works offline and supports dark/light themes. Implemented with Vite, React, Zustand, TypeScript and Tailwind CSS.",
+  "version": "1.0.1",
+  "description": "The chrome and firefox extension to keep track of your favorite series and episodes with a simple, cozy interface. Works offline and supports dark/light themes. Implemented with Vite, React, Zustand, TypeScript and Tailwind CSS.",
   "license": "Source-Available, Non-Commercial License (Proprietary)",
   "repository": {
     "type": "git",
