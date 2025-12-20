@@ -349,12 +349,13 @@ export const SettingsDialog: FC = (): JSX.Element => {
                 </section>
 
                 {/* Pro Features Info or Success Message */}
-                <div
+                {/* Disable Pro version */}
+                {/* <div
                   data-tag="settings__support"
                   className="mt-4"
                 >
                   <SupportBlock isActivated={isLicenseActivated} />
-                </div>
+                </div> */}
               </div>
             </div>
           </DialogPanel>

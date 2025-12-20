@@ -13,7 +13,7 @@ type ThemeActions = {
 };
 
 const initialState: ThemeStore = {
-  theme: Theme.Light,
+  theme: Theme.Dark,
 } as const;
 
 export const useThemeStore = create<ThemeStore & ThemeActions>()(

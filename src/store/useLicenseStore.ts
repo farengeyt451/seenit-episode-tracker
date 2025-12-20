@@ -41,7 +41,7 @@ type LicenseStatusStoreActions = {
 
 const initialState: LicenseStatusStore = {
   isLicenseActivating: false,
-  isLicenseActivated: false,
+  isLicenseActivated: true, // Disable Pro version
   isLicenseChecking: false,
   isLicenseChecked: false,
   activateLicenseErrorMessage: null,
