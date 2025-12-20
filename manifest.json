@@ -3,12 +3,23 @@
   "name": "Seenit! - Episode Tracker",
   "description": "Keep track of your favorite series and episodes with a simple, cozy interface. Works offline and supports dark/light themes.",
   "version": "1.0.2",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "seenit@seenitapp.org",
+      "strict_min_version": "142.0",
+      "data_collection_permissions": {
+        "required": [
+          "none"
+        ]
+      }
+    }
+  },
   "permissions": [
     "storage"
   ],
   "host_permissions": [
-    "https://kofi.seenitapp.org/*",
-    "https://api.tvmaze.com/*"
+    "https://api.tvmaze.com/*",
+    "https://kofi.seenitapp.org/*"
   ],
   "action": {
     "default_popup": "src/pages/popup/index.html",
