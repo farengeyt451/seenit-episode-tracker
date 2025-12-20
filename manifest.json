@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Seenit! - Episode Tracker",
   "description": "Keep track of your favorite series and episodes with a simple, cozy interface. Works offline and supports dark/light themes.",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "permissions": [
     "storage"
   ],
