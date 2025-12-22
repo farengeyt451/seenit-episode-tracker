@@ -28,9 +28,9 @@
 
 ---
 
-## ✨ Features
+## Features
 
-### 🎯 Core Functionality
+### Core Functionality
 
 - **Series Tracking** - Add and track multiple TV series with complete metadata
 - **Progress Monitoring** - Visual progress bars for seasons and episodes
@@ -39,23 +39,15 @@
 - **Smart Search** - Search for new series to track
 - **Filter & Sort** - Filter series by title or genre
 
-### 💾 Data Management
+### Data Management
 
 - **100% Local Storage** - All data stored locally using Chrome Storage API
 - **Export/Import** - Backup and restore your tracking data
 - **Auto-Refresh** - Keep series metadata up to date
-- **Completion Rewards** - Celebrate when you finish a series!
-
-### 🎨 User Experience
-
-- **Dark/Light Themes** - Automatic theme switching
-- **Responsive Design** - Optimized for popup interface
-- **Lightning Fast** - Built with modern web technologies
-- **No Authentication** - Works completely offline, no account needed
 
 ---
 
-## 🚀 Installation
+## Installation
 
 ### Install from Store
 
@@ -80,7 +72,7 @@
 
 ---
 
-## 💻 Development
+## Development
 
 ### Prerequisites
 
@@ -124,74 +116,74 @@ Output will be in `dist_chrome` or `dist_firefox` folders.
 
 ---
 
-## 🛠 Tech Stack
+## Tech Stack
 
 ### Core Technologies
 
-- **[React 19](https://react.dev/)** - UI library with latest features
-- **[TypeScript 5.9](https://www.typescriptlang.org/)** - Type-safe JavaScript
-- **[Vite 7.1](https://vitejs.dev/)** - Lightning-fast build tool
-- **[Tailwind CSS 4.1](https://tailwindcss.com/)** - Utility-first styling
+- **[React 19](https://react.dev/)**
+- **[TypeScript 5.9](https://www.typescriptlang.org/)**
+- **[Vite 7.1](https://vitejs.dev/)**
+- **[Tailwind CSS 4.1](https://tailwindcss.com/)**
 
 ### State Management & Data
 
-- **[Zustand 5.0](https://github.com/pmndrs/zustand)** - Lightweight state management
-- **[Immer 10.2](https://immerjs.github.io/immer/)** - Immutable state updates
-- **[Zod 4.1](https://zod.dev/)** - TypeScript-first schema validation
-- **Chrome Storage API** - Local data persistence
+- **[Zustand 5.0](https://github.com/pmndrs/zustand)**
+- **[Immer 10.2](https://immerjs.github.io/immer/)**
+- **[Zod 4.1](https://zod.dev/)**
+- **Chrome Storage API**
 
 ### UI Components
 
-- **[Headless UI 2.2](https://headlessui.com/)** - Unstyled, accessible components
-- **[Heroicons 2.2](https://heroicons.com/)** - Beautiful hand-crafted icons
-- **[React Rewards 2.1](https://github.com/thedevelobear/react-rewards)** - Celebration animations
+- **[Headless UI 2.2](https://headlessui.com/)**
+- **[Heroicons 2.2](https://heroicons.com/)**
+- **[React Rewards 2.1](https://github.com/thedevelobear/react-rewards)**
 
 ### Utilities
 
-- **[Luxon 3.7](https://moment.github.io/luxon/)** - Modern date handling
-- **[Axios 1.13](https://axios-http.com/)** - HTTP client
-- **[@uidotdev/usehooks](https://usehooks.com/)** - Collection of React hooks
-- **[clsx 2.1](https://github.com/lukeed/clsx)** - Conditional classNames
+- **[Luxon 3.7](https://moment.github.io/luxon/)**
+- **[Axios 1.13](https://axios-http.com/)**
+- **[@uidotdev/usehooks](https://usehooks.com/)**
+- **[clsx 2.1](https://github.com/lukeed/clsx)**
 
 ### Development Tools
 
-- **[@crxjs/vite-plugin](https://crxjs.dev/vite-plugin/)** - Vite plugin for browser extensions
-- **[ESLint 9](https://eslint.org/)** - Code linting
-- **[Prettier 3.6](https://prettier.io/)** - Code formatting
-- **[Nodemon 3.1](https://nodemon.io/)** - Auto-reload for development
+- **[@crxjs/vite-plugin](https://crxjs.dev/vite-plugin/)**
+- **[ESLint 9](https://eslint.org/)**
+- **[Prettier 3.6](https://prettier.io/)**
+- **[Nodemon 3.1](https://nodemon.io/)**
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 seenit-extension/
 ├── public/               # Static assets (icons)
 ├── src/
 │   ├── components/       # React components
-│   │   ├── ui/          # Reusable UI components
+│   │   ├── ui/           # Reusable UI components
 │   │   ├── episodes-tracker/
 │   │   ├── search/
 │   │   └── ...
-│   ├── store/           # Zustand stores
+│   ├── store/            # Zustand stores
 │   │   ├── useSeriesStore.ts
 │   │   ├── useThemeStore.ts
 │   │   └── ...
-│   ├── hooks/           # Custom React hooks
-│   ├── utils/           # Utility functions
-│   ├── types/           # TypeScript types
-│   ├── enums/           # Enums and constants
+│   ├── hooks/            # Custom React hooks
+│   ├── utils/            # Utility functions
+│   ├── types/            # TypeScript types
+│   ├── enums/            # Enums and constants
 │   └── pages/
-│       ├── popup/       # Main extension popup
-│       └── background/  # Background script (optional)
-├── manifest.json        # Extension manifest
-├── vite.config.*.ts     # Vite configurations
+│       ├── popup/        # Main extension popup
+│       └── background/   # Background script (optional)
+├── manifest.json         # Extension manifest
+├── vite.config.*.ts      # Vite configurations
 └── package.json
 ```
 
 ---
 
-## 🎨 Features Showcase
+## Features Showcase
 
 ### Episode Tracking
 
@@ -209,17 +201,9 @@ Find new series to track with integrated search:
 - Series metadata from TMDB
 - Add series with one click
 
-### Data Portability
-
-Your data belongs to you:
-
-- Export tracking data as JSON
-- Import backups anytime
-- No vendor lock-in
-
 ---
 
-## 📝 License
+## License
 
 This project is **Source-Available** under a **Non-Commercial Proprietary License**.
 
@@ -243,7 +227,7 @@ For more details, see the [LICENSE](LICENSE) file.
 
 ---
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - Built with the [Vite Web Extension Boilerplate](https://github.com/JohnBra/vite-web-extension) by Jonathan Braat
 - Series metadata powered by [THETVDB API](https://www.thetvdb.com/)
