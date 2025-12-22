@@ -246,13 +246,12 @@ For more details, see the [LICENSE](LICENSE) file.
 ## 🙏 Acknowledgments
 
 - Built with the [Vite Web Extension Boilerplate](https://github.com/JohnBra/vite-web-extension) by Jonathan Braat
-- Series metadata powered by [TMDB API](https://www.themoviedb.org/)
+- Series metadata powered by [THETVDB API](https://www.thetvdb.com/)
 - Icons by [Heroicons](https://heroicons.com/)
 
 ---
 
 <div align="center">
-  <p>Made with ❤️ for TV series enthusiasts</p>
   <p>
     <a href="https://github.com/farengeyt451/seenit-extension/issues">Report Bug</a> •
     <a href="https://github.com/farengeyt451/seenit-extension/issues">Request Feature</a>
