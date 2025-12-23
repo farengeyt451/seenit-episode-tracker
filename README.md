@@ -56,11 +56,11 @@
 ### Install from Store
 
 <p align="left">
-  <a href="https://chromewebstore.google.com/detail/seenit-episode-tracker/amopmnmnaimidbcfnjbnlfagmlmdhlch" target="_blank">
+  <a href="https://chromewebstore.google.com/detail/seenit-episode-tracker/amopmnmnaimidbcfnjbnlfagmlmdhlch">
     <img src="https://img.shields.io/badge/Chrome-Install-4285F4?style=for-the-badge&logo=google-chrome&logoColor=white" alt="Install on Chrome Web Store" />
   </a>
   &nbsp;&nbsp;
-  <a href="https://addons.mozilla.org/ru/firefox/addon/seenit-episode-tracker/" target="_blank">
+  <a href="https://addons.mozilla.org/ru/firefox/addon/seenit-episode-tracker/">
     <img src="https://img.shields.io/badge/Firefox-Install-FF7139?style=for-the-badge&logo=firefox&logoColor=white" alt="Install on Firefox Add-ons" />
   </a>
 </p>
