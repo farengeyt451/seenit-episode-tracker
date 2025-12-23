@@ -122,14 +122,14 @@ Output will be in `dist_chrome` or `dist_firefox` folders.
 
 - **[React 19](https://react.dev/)**
 - **[TypeScript 5.9](https://www.typescriptlang.org/)**
-- **[Vite 7.1](https://vitejs.dev/)**
+- **[Vite 7.3](https://vitejs.dev/)**
 - **[Tailwind CSS 4.1](https://tailwindcss.com/)**
 
 ### State Management & Data
 
 - **[Zustand 5.0](https://github.com/pmndrs/zustand)**
-- **[Immer 10.2](https://immerjs.github.io/immer/)**
-- **[Zod 4.1](https://zod.dev/)**
+- **[Immer 11.1](https://immerjs.github.io/immer/)**
+- **[Zod 4.2](https://zod.dev/)**
 - **Chrome Storage API**
 
 ### UI Components
@@ -149,7 +149,7 @@ Output will be in `dist_chrome` or `dist_firefox` folders.
 
 - **[@crxjs/vite-plugin](https://crxjs.dev/vite-plugin/)**
 - **[ESLint 9](https://eslint.org/)**
-- **[Prettier 3.6](https://prettier.io/)**
+- **[Prettier 3.7](https://prettier.io/)**
 - **[Nodemon 3.1](https://nodemon.io/)**
 
 ---
