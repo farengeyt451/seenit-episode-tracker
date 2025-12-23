@@ -12,8 +12,8 @@
   <p align="center">
     <img src="https://img.shields.io/badge/React-19-61DAFB?style=flat&logo=react&logoColor=white" alt="React 19" />
     <img src="https://img.shields.io/badge/TypeScript-5.9-3178C6?style=flat&logo=typescript&logoColor=white" alt="TypeScript" />
+    <img src="https://img.shields.io/badge/Zustand-5.0-18222C?style=flat&logo=zustand&logoColor=white" alt="Zustand" />
     <img src="https://img.shields.io/badge/Tailwind-4.1-38B2AC?style=flat&logo=tailwind-css&logoColor=white" alt="Tailwind CSS" />
-    <img src="https://img.shields.io/badge/Vite-7.1-646CFF?style=flat&logo=vite&logoColor=white" alt="Vite" />
     <img src="https://img.shields.io/badge/License-Proprietary-red.svg" alt="Source-Available, Non-Commercial License" />
   </p>
 
