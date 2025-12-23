@@ -1,7 +1,7 @@
 <div align="center">
   <img src="public/icon-128.png" alt="Seenit! Logo" width="120" height="120"/>
 
-# 🎬 Seenit! - Episode Tracker
+# Seenit! - Episode Tracker
 
   <p align="center">
     <strong>Your personal series companion that lives in your browser</strong>
@@ -180,26 +180,6 @@ seenit-extension/
 ├── vite.config.*.ts      # Vite configurations
 └── package.json
 ```
-
----
-
-## Features Showcase
-
-### Episode Tracking
-
-Track your progress through series with intuitive visual indicators:
-
-- Season-by-season breakdown
-- Episode completion tracking
-- Progress bars for visual feedback
-
-### Search & Discovery
-
-Find new series to track with integrated search:
-
-- Real-time search results
-- Series metadata from TMDB
-- Add series with one click
 
 ---
 
