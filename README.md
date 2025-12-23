@@ -28,6 +28,10 @@
 
 ---
 
+<div align="center">
+  <img src="images/hero-2.png" alt="Seenit! - Episode Tracker Hero" style="border-radius: 12px; margin: 20px 0; max-width: 100%;" />
+</div>
+
 ## Features
 
 ### Core Functionality
@@ -51,7 +55,14 @@
 
 ### Install from Store
 
-> Coming soon to Chrome Web Store and Firefox Add-ons
+<p align="left">
+  <a href="https://chromewebstore.google.com/detail/seenit-episode-tracker/amopmnmnaimidbcfnjbnlfagmlmdhlch" target="_blank">
+    <img src="https://img.shields.io/badge/Chrome-Install-4285F4?style=for-the-badge&logo=google-chrome&logoColor=white" alt="Install on Chrome Web Store" />
+  </a>
+  <br />
+  <br />
+  <em>Firefox version coming soon</em>
+</p>
 
 ### Install Manually
 
