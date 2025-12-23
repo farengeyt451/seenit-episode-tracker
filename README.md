@@ -59,9 +59,10 @@
   <a href="https://chromewebstore.google.com/detail/seenit-episode-tracker/amopmnmnaimidbcfnjbnlfagmlmdhlch" target="_blank">
     <img src="https://img.shields.io/badge/Chrome-Install-4285F4?style=for-the-badge&logo=google-chrome&logoColor=white" alt="Install on Chrome Web Store" />
   </a>
-  <br />
-  <br />
-  <em>Firefox version coming soon</em>
+  &nbsp;&nbsp;
+  <a href="https://addons.mozilla.org/ru/firefox/addon/seenit-episode-tracker/" target="_blank">
+    <img src="https://img.shields.io/badge/Firefox-Install-FF7139?style=for-the-badge&logo=firefox&logoColor=white" alt="Install on Firefox Add-ons" />
+  </a>
 </p>
 
 ### Install Manually
