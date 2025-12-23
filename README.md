@@ -29,7 +29,7 @@
 ---
 
 <div align="center">
-  <img src="images/hero-2.png" alt="Seenit! - Episode Tracker Hero" style="border-radius: 12px; margin: 20px 0; max-width: 100%;" />
+  <img src="images/hero-2.png" alt="Seenit! - Episode Tracker Hero" style="max-width: 100%; border-radius: 12px;" />
 </div>
 
 ## Features
