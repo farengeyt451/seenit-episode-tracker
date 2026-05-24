@@ -6,6 +6,12 @@
   "icons": {
     "128": "public/dev-icon-128.png"
   },
+  "oauth2": {
+    "client_id": "1074219223638-qdvmkv7titvnnc4psq9hqfdgj68cr6dt.apps.googleusercontent.com",
+    "scopes": [
+      "https://www.googleapis.com/auth/drive.appdata"
+    ]
+  },
   "web_accessible_resources": [
     {
       "resources": [

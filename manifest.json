@@ -15,11 +15,19 @@
     }
   },
   "permissions": [
-    "storage"
+    "storage",
+    "identity"
   ],
+  "oauth2": {
+    "client_id": "1074219223638-fjvp4moemeu6qe47u7go0k7sne5k6m2a.apps.googleusercontent.com",
+    "scopes": [
+      "https://www.googleapis.com/auth/drive.appdata"
+    ]
+  },
   "host_permissions": [
     "https://api.tvmaze.com/*",
-    "https://kofi.seenitapp.org/*"
+    "https://kofi.seenitapp.org/*",
+    "https://www.googleapis.com/*"
   ],
   "action": {
     "default_popup": "src/pages/popup/index.html",
