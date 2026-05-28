@@ -1,3 +1,4 @@
+import { SeriesStatus } from '@/enums';
 import { z } from 'zod';
 
 const ImageSchema = z.object({
@@ -153,19 +154,35 @@ const TrackingSeriesSchema = z.object({
 });
 
 const TrackingEpisodeSchema = z.object({
+  id: z.string(),
+  number: z.number(),
   isWatched: z.boolean(),
   timestamp: z.string().nullable(),
 });
 
 const TrackingSeasonSchema = z.object({
+  id: z.number(),
+  number: z.number(),
   episodes: z.record(z.string(), TrackingEpisodeSchema),
 });
 
 const TrackingSeriesDataItemSchema = z.object({
-  seasons: z.record(z.string(), TrackingSeasonSchema),
+  id: z.number().nullable(),
+  name: z.string(),
+  status: z.enum(SeriesStatus).nullable(),
+  seasons: z.record(z.string(), TrackingSeasonSchema).nullable(),
 });
 
 const TrackingSeriesDataSchema = z.record(z.string(), TrackingSeriesDataItemSchema);
+
+// Soft-delete marker for a series. Written by removeSeries(); consumed by
+// mergeStates() so deletions can propagate across devices. See
+// docs/sync-merge-strategy.md for the full lifecycle.
+const SeriesTombstoneSchema = z.object({
+  deletedAt: z.string(),
+});
+
+export const SeriesTombstonesSchema = z.record(z.string(), SeriesTombstoneSchema);
 
 export const PersistedSeriesStoreSchema = z.object({
   seriesData: z.array(SeriesSchema).nullable(),
@@ -174,6 +191,9 @@ export const PersistedSeriesStoreSchema = z.object({
   favoritesSeriesMap: z.record(z.string(), z.boolean()),
   trackingSeriesData: TrackingSeriesDataSchema.nullable(),
   isRewardShownMap: z.record(z.string(), z.boolean()),
+  // Optional for backward compatibility with legacy snapshots (schemaVersion 1).
+  // Merge code treats absent as an empty map.
+  seriesTombstones: SeriesTombstonesSchema.optional(),
 });
 
 export const StorageSchema = z.object({
@@ -181,8 +201,22 @@ export const StorageSchema = z.object({
   version: z.number(),
 });
 
+export const DriveSnapshotSchema = StorageSchema.extend({
+  syncedAt: z.string(),
+  // schemaVersion 1: pre-tombstones. schemaVersion 2: current. Absent → treat as 1.
+  schemaVersion: z.number().optional(),
+  // Stable device UUID of whichever client wrote this snapshot. Diagnostics only.
+  lastWriter: z.string().nullable().optional(),
+});
+
+export const CURRENT_DRIVE_SCHEMA_VERSION = 2;
+
+export type SeriesTombstone = z.infer<typeof SeriesTombstoneSchema>;
+export type SeriesTombstones = z.infer<typeof SeriesTombstonesSchema>;
+
 export type PersistedSeriesStore = z.infer<typeof PersistedSeriesStoreSchema>;
 export type StorageData = z.infer<typeof StorageSchema>;
+export type DriveSnapshot = z.infer<typeof DriveSnapshotSchema>;
 
 export const ToggleEpisodeWatchedDataSchema = z.object({
   seriesId: z.string(),

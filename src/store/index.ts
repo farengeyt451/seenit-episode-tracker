@@ -3,4 +3,5 @@ export { useLicenseStore } from './useLicenseStore';
 export { useSearchStore } from './useSearchStore';
 export { useSeriesStore } from './useSeriesStore';
 export { useSidebarStore } from './useSidebarStore';
+export { useSyncStore } from './useSyncStore';
 export { useThemeStore } from './useThemeStore';

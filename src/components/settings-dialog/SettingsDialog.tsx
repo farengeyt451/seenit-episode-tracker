@@ -1,7 +1,7 @@
-import { SupportBlock } from '@/components';
 import { LockWrapper, SeenItButton, SeenitInput } from '@/components/ui';
+import { SyncStatus } from '@/enums';
 import { useBackup } from '@/hooks';
-import { useLicenseStore, useSeriesStore } from '@/store';
+import { useLicenseStore, useSeriesStore, useSyncStore } from '@/store';
 import { Nullable } from '@/utility-types';
 import { Button, Dialog, DialogPanel, DialogTitle, Field } from '@headlessui/react';
 import { BackspaceIcon, ExclamationCircleIcon } from '@heroicons/react/24/outline';
@@ -11,10 +11,12 @@ import {
   ArrowRightIcon,
   ArrowUpTrayIcon,
   CheckCircleIcon,
+  CloudArrowUpIcon,
   Cog6ToothIcon,
   XMarkIcon,
 } from '@heroicons/react/24/solid';
 import { clsx } from 'clsx';
+import { DateTime } from 'luxon';
 import { ChangeEvent, FC, JSX, useRef, useState } from 'react';
 import { useShallow } from 'zustand/shallow';
 
@@ -35,6 +37,18 @@ export const SettingsDialog: FC = (): JSX.Element => {
   } = useBackup();
 
   const activeSeriesId = useSeriesStore(state => state.activeSeriesId);
+
+  const { syncStatus, isConnected, lastSyncedAt, syncError, connect, disconnect, syncNow } = useSyncStore(
+    useShallow(state => ({
+      syncStatus: state.status,
+      isConnected: state.isConnected,
+      lastSyncedAt: state.lastSyncedAt,
+      syncError: state.error,
+      connect: state.connect,
+      disconnect: state.disconnect,
+      syncNow: state.syncNow,
+    })),
+  );
 
   const {
     isLicenseActivating,
@@ -80,6 +94,13 @@ export const SettingsDialog: FC = (): JSX.Element => {
     return 'Restore your tracking data';
   };
 
+  const formatLastSynced = (): string => {
+    if (!lastSyncedAt) return 'Never synced';
+    const relative = DateTime.fromISO(lastSyncedAt).toRelative({ style: 'short' });
+
+    return relative ? `Last synced ${relative}` : 'Synced recently';
+  };
+
   const handleModalOpen = () => {
     setIsOpen(true);
     clearImportErrorMessage();
@@ -110,22 +131,23 @@ export const SettingsDialog: FC = (): JSX.Element => {
 
   return (
     <div data-tag="settings">
-      {/* Settings Icon Button */}
       <Button
         data-tag="settings__button"
         onClick={handleModalOpen}
         className={clsx(
-          'group rounded-lg p-1.5 transition-colors duration-150',
-          'bg-gray-700 transition-colors duration-150 ease-out data-hover:bg-gray-600',
-          'light:bg-blue-600 light:border light:border-slate-200 light:data-hover:bg-blue-700',
-          'cursor-pointer',
+          'group relative flex size-7 cursor-pointer items-center justify-center rounded-full',
+          'disabled:pointer-events-none',
         )}
         aria-label="Open settings"
         title="Settings"
       >
         <Cog6ToothIcon
           data-tag="settings__icon"
-          className="size-5 text-white duration-300 group-hover:rotate-35"
+          className={clsx(
+            'size-6 transition-all duration-300 ease-out',
+            'text-gray-300 group-hover:rotate-45 group-hover:text-white',
+            'light:text-slate-600 light:group-hover:text-slate-900',
+          )}
         />
       </Button>
 
@@ -149,7 +171,7 @@ export const SettingsDialog: FC = (): JSX.Element => {
             transition
             className={clsx(
               'light:bg-gray-300 relative w-full rounded-xl bg-gray-800 p-6 shadow-xl',
-              'min-h-[420px]',
+              'min-h-105',
               'duration-300 ease-out data-closed:transform-[scale(95%)] data-closed:opacity-0',
               'overflow-hidden',
             )}
@@ -284,6 +306,97 @@ export const SettingsDialog: FC = (): JSX.Element => {
                     </div>
                   </section>
                 )}
+
+                {/* Cloud Sync Section */}
+                <section
+                  data-tag="settings__cloud-sync"
+                  className="mt-2"
+                >
+                  <h3 className="light:text-slate-600 text-sm font-medium text-gray-400">Cloud Sync</h3>
+
+                  <div className="mt-3">
+                    {!isConnected ? (
+                      <div className="light:bg-slate-100 flex items-center justify-between rounded-lg bg-gray-700/50 p-3">
+                        <div className="flex items-center gap-3">
+                          {syncStatus === SyncStatus.Error ? (
+                            <ExclamationCircleIcon className="size-5 text-red-500" />
+                          ) : (
+                            <CloudArrowUpIcon className="size-5 text-blue-400" />
+                          )}
+                          <div className="text-left">
+                            <p className="light:text-gray-600 font-medium text-gray-100">Google Drive</p>
+                            <p
+                              className={clsx(
+                                'light:text-slate-600 text-sm',
+                                syncStatus === SyncStatus.Error ? 'text-red-400' : 'text-gray-400',
+                              )}
+                            >
+                              {syncStatus === SyncStatus.Error && syncError
+                                ? syncError
+                                : 'Sync your data across devices'}
+                            </p>
+                          </div>
+                        </div>
+                        <SeenItButton
+                          colorType="primary"
+                          size="small"
+                          disabled={syncStatus === SyncStatus.Syncing}
+                          onClick={connect}
+                        >
+                          {syncStatus === SyncStatus.Syncing ? (
+                            <div className="size-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                          ) : (
+                            'Connect'
+                          )}
+                        </SeenItButton>
+                      </div>
+                    ) : (
+                      <div className="light:bg-slate-100 flex items-center justify-between rounded-lg bg-gray-700/50 p-3">
+                        <div className="flex items-center gap-3">
+                          {syncStatus === SyncStatus.Syncing ? (
+                            <div className="size-5 animate-spin rounded-full border-2 border-blue-400 border-t-transparent" />
+                          ) : syncStatus === SyncStatus.Error ? (
+                            <ExclamationCircleIcon className="size-5 text-red-500" />
+                          ) : (
+                            <CheckCircleIcon className="size-5 text-green-400" />
+                          )}
+                          <div className="text-left">
+                            <p className="light:text-gray-600 font-medium text-gray-100">Google Drive</p>
+                            <p
+                              className={clsx(
+                                'light:text-slate-600 text-sm',
+                                syncStatus === SyncStatus.Error ? 'text-red-400' : 'text-gray-400',
+                              )}
+                            >
+                              {syncStatus === SyncStatus.Syncing
+                                ? 'Syncing...'
+                                : syncStatus === SyncStatus.Error && syncError
+                                  ? syncError
+                                  : formatLastSynced()}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <SeenItButton
+                            colorType="primary"
+                            size="small"
+                            disabled={syncStatus === SyncStatus.Syncing}
+                            onClick={syncNow}
+                          >
+                            Sync
+                          </SeenItButton>
+                          <SeenItButton
+                            colorType="secondary"
+                            size="small"
+                            onClick={disconnect}
+                          >
+                            Disconnect
+                          </SeenItButton>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </section>
 
                 {/* Data Management Section */}
                 <section data-tag="settings__data-management">

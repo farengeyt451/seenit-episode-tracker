@@ -2,7 +2,7 @@ import { EmptySeriesState, EpisodesGrid, Header, SeasonHeader, Sidebar } from '@
 import { SeriesHeader } from '@/components/series-header';
 import { LinearProgress, SeenitDialog, SeenitDialogHandle, WelcomeTVIcon } from '@/components/ui';
 import { SeriesStatus } from '@/enums';
-import { useSeriesCompletionReward } from '@/hooks/useSeriesCompletionReward';
+import { useGoogleSync, useSeriesCompletionReward } from '@/hooks';
 import { useFilterStore, useSearchStore, useSeriesStore } from '@/store';
 import { TrackingSeason, TrackingSeries } from '@/types';
 import { Nullable } from '@/utility-types';
@@ -103,6 +103,8 @@ export const EpisodesTracker: FC = (): JSX.Element => {
 
   const isCompleted = seriesCompletion.isCompleted;
   const isEnded = activeTrackingSeries?.status === SeriesStatus.Ended;
+
+  useGoogleSync();
 
   useSeriesCompletionReward({
     isCompleted,

@@ -32,3 +32,18 @@ export const LICENSE_STATUS_STORAGE_NAME = 'license-status-storage';
 export const ACTIVATE_LICENSE = `${BASE_LICENSE_URL}/${BASE_LICENSE_API.ACTIVATE_LICENSE}`;
 
 export const CHECK_LICENSE = `${BASE_LICENSE_URL}/${BASE_LICENSE_API.CHECK_LICENSE}`;
+
+export const SYNC_META_STORAGE_NAME = 'sync-meta';
+
+export const DRIVE_FILE_NAME = 'seenit-data.json';
+
+export const SYNC_DEBOUNCE_MS = 2000;
+
+// Tombstones older than this are dropped during merge. 60 days is well beyond
+// any plausible offline-device window while keeping the table bounded.
+export const TOMBSTONE_TTL_MS = 60 * 24 * 60 * 60 * 1000;
+
+// Stable device UUID, generated once on first sync action and reused thereafter.
+// Stored in chrome.storage so it survives extension restarts but is local-only
+// (never written into the Drive snapshot's state, only used in `lastWriter`).
+export const DEVICE_ID_STORAGE_NAME = 'seenit-device-id';
