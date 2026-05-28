@@ -4,7 +4,7 @@
 //   connect      — user clicks "Connect Google Drive" in Settings (interactive auth)
 //   disconnect   — user clicks "Disconnect"
 //   syncNow      — manual "Sync now" or debounced auto-sync
-//   tryReconnect — called silently on app startup
+//   tryReconnect — called silently on app startup; runs a full sync cycle
 //
 // All three "do work" actions (connect, syncNow, tryReconnect-rehydrate path)
 // funnel through the same internal `runSyncCycle` routine, which does a
@@ -417,13 +417,14 @@ export const useSyncStore = create<SyncState & SyncActions>()(
           },
 
           // ════════════════════════════════════════════════════════════════════
-          // tryReconnect — silent startup restore
+          // tryReconnect — silent startup restore + initial sync
           //
           // 1. Rehydrate persisted sync meta (skipHydration=true means this is
           //    the only time hydration runs).
           // 2. If not connected → nothing to do.
-          // 3. Try a non-interactive token; if it succeeds, the connection is
-          //    live and useGoogleSync will start auto-syncing immediately.
+          // 3. Try a non-interactive token; if it succeeds, run a full sync
+          //    cycle immediately so the popup always opens with fresh Drive
+          //    data (another device may have written since the last session).
           // ════════════════════════════════════════════════════════════════════
           tryReconnect: async () => {
             await useSyncStore.persist.rehydrate();
@@ -438,6 +439,10 @@ export const useSyncStore = create<SyncState & SyncActions>()(
                 false,
                 SyncActionTypes.TryReconnectSuccess,
               );
+              // Run a full pull→merge→push cycle on every popup open so the
+              // user always sees the latest state from Drive without having to
+              // click "Sync now" manually.
+              await get().syncNow();
             } catch {
               set(
                 {
