@@ -429,13 +429,7 @@ export const SettingsDialog: FC = (): JSX.Element => {
                           disabled={syncStatus === SyncStatus.Syncing}
                           onClick={connect}
                         >
-                          {syncStatus === SyncStatus.Syncing ? (
-                            <Spinner className="size-4 border-white" />
-                          ) : syncStatus === SyncStatus.Error ? (
-                            'Reconnect'
-                          ) : (
-                            'Connect'
-                          )}
+                          {syncStatus === SyncStatus.Error ? 'Reconnect' : 'Connect'}
                         </SeenItButton>
                       )}
                     </div>
