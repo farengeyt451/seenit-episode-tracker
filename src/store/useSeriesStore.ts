@@ -9,6 +9,8 @@ import { create } from 'zustand';
 import { createJSONStorage, devtools, persist } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 
+const SERIES_STORE_VERSION = 2;
+
 enum SeriesActionTypes {
   InitLoading = 'initLoading',
   InitSuccess = 'initSuccess',
@@ -299,7 +301,7 @@ export const useSeriesStore = create<SeriesStore & SeriesActions>()(
         {
           name: SERIES_STORAGE_NAME,
           storage: createJSONStorage(() => chromeStorage),
-          version: 2,
+          version: SERIES_STORE_VERSION,
           partialize: state => ({
             seriesData: state.seriesData,
             activeSeriesId: state.activeSeriesId,

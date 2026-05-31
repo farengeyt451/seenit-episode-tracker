@@ -1,18 +1,8 @@
-// mergeStates — pure additive field-level merge of two PersistedSeriesStore
-// snapshots, with tombstone-aware deletion propagation.
-//
-// Invoked by every sync cycle in useSyncStore (connect, syncNow, tryReconnect).
-// The merge is deterministic and commutative on the data fields: given the
-// same (local, cloud) pair any device produces the same merged result.
-//
-// See docs/sync-merge-strategy.md for the full use-case matrix and rationale.
-
 import { TOMBSTONE_TTL_MS } from '@/constants';
 import { PersistedSeriesStore, SeriesTombstones } from '@/zod-schemas';
 
-// ─── Boolean map merge ────────────────────────────────────────────────────────
 // Union rule: for any key present in either map, true wins over false / absent.
-// Used for trackingSeriesMap, favoritesSeriesMap, and isRewardShownMap.
+// Used for trackingSeriesMap, favoritesSeriesMap, and isRewardShownMap
 const mergeBooleanMaps = (local: Record<string, boolean>, cloud: Record<string, boolean>): Record<string, boolean> => {
   const result: Record<string, boolean> = { ...local };
   for (const [key, val] of Object.entries(cloud)) {
@@ -21,10 +11,9 @@ const mergeBooleanMaps = (local: Record<string, boolean>, cloud: Record<string, 
   return result;
 };
 
-// ─── Series metadata merge ────────────────────────────────────────────────────
 // Union by series id. If the same series exists in both copies, keep the one
 // with the higher `updated` value (TVMaze timestamp — higher = more recently
-// refreshed from the API).
+// refreshed from the API)
 const mergeSeriesData = (
   local: PersistedSeriesStore['seriesData'],
   cloud: PersistedSeriesStore['seriesData'],
@@ -45,7 +34,6 @@ const mergeSeriesData = (
   return Array.from(byId.values());
 };
 
-// ─── Tracking data merge ──────────────────────────────────────────────────────
 // Additive merge at the episode level. Decision for each episode:
 //   - Both timestamps null → isWatched: true wins; tie → keep local
 //   - One timestamp null   → non-null wins (explicit action beats never-set)
@@ -121,10 +109,9 @@ const mergeTrackingData = (
   return result;
 };
 
-// ─── Tombstone helpers ───────────────────────────────────────────────────────
 // Compute the most recent episode timestamp for a given series, across BOTH
 // sides of the merge. Returns null if no episode in either copy was ever
-// explicitly toggled (i.e. lastActivityAt is -∞ for the deletion comparison).
+// explicitly toggled (i.e. lastActivityAt is -∞ for the deletion comparison)
 const lastActivityAt = (
   seriesId: string,
   local: PersistedSeriesStore['trackingSeriesData'],
@@ -160,7 +147,7 @@ const lastActivityAt = (
 //            scenario; longer absences are vanishingly rare in practice).
 //
 // Returns { tombstones, resurrected } so the caller can filter the resurrected
-// ids out of the deletion path (they remain as live series in the merged data).
+// ids out of the deletion path (they remain as live series in the merged data)
 const mergeTombstones = (
   localTombstones: SeriesTombstones,
   cloudTombstones: SeriesTombstones,
@@ -223,7 +210,8 @@ const applyTombstones = (
     trackingSeriesData: state.trackingSeriesData ? filterMap(state.trackingSeriesData, deadIds) : null,
     // If the user's currently-active series was deleted on another device,
     // unset it; the EpisodesTracker will show the empty state.
-    activeSeriesId: state.activeSeriesId !== null && deadIds.has(String(state.activeSeriesId)) ? null : state.activeSeriesId,
+    activeSeriesId:
+      state.activeSeriesId !== null && deadIds.has(String(state.activeSeriesId)) ? null : state.activeSeriesId,
   };
 };
 
@@ -235,15 +223,6 @@ const filterMap = <T>(map: Record<string, T>, deadIds: Set<string>): Record<stri
   return out;
 };
 
-// ─── Public API ───────────────────────────────────────────────────────────────
-// Pure function — no side effects, no storage access, no Zustand calls.
-//
-// Order of operations:
-//   1. Reconcile tombstones (union + GC + resurrection detection).
-//   2. Merge all data fields additively.
-//   3. Apply the surviving tombstones to remove deleted series from the result.
-//   4. Local UI fields (activeSeriesId) are preserved unless the active series
-//      was tombstoned, in which case it is cleared.
 export const mergeStates = (local: PersistedSeriesStore, cloud: PersistedSeriesStore): PersistedSeriesStore => {
   const localTombstones = local.seriesTombstones ?? {};
   const cloudTombstones = cloud.seriesTombstones ?? {};

@@ -41,7 +41,7 @@ PersistedSeriesStore {
 
 ```
 DriveSnapshot extends StorageSchema {
-  schemaVersion: 2
+  cloudSchemaVersion: 2
   syncedAt:      string         — ISO-8601, set every push
   lastWriter:    string | null  — deviceId of the last writer (diagnostics only)
 }
@@ -201,7 +201,7 @@ syncCycle({ interactive }):
 
   ─── PUSH phase ─────────────────────────────────────────────────
   snapshot = {
-    schemaVersion: 2,
+    cloudSchemaVersion: 2,
     version: storageVersion,
     state: merged,
     syncedAt: now(),
@@ -286,7 +286,7 @@ do not sync UI state or device-local secrets.
 
 ## Schema versioning
 
-`DriveSnapshot.schemaVersion`:
+`DriveSnapshot.cloudSchemaVersion`:
 
 - `1` (legacy) — no `seriesTombstones`. On read, treated as v2 with
   `seriesTombstones: {}`. Next push promotes the file to v2.

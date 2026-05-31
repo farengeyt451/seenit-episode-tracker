@@ -175,9 +175,6 @@ const TrackingSeriesDataItemSchema = z.object({
 
 const TrackingSeriesDataSchema = z.record(z.string(), TrackingSeriesDataItemSchema);
 
-// Soft-delete marker for a series. Written by removeSeries(); consumed by
-// mergeStates() so deletions can propagate across devices. See
-// docs/sync-merge-strategy.md for the full lifecycle.
 const SeriesTombstoneSchema = z.object({
   deletedAt: z.string(),
 });
@@ -191,8 +188,6 @@ export const PersistedSeriesStoreSchema = z.object({
   favoritesSeriesMap: z.record(z.string(), z.boolean()),
   trackingSeriesData: TrackingSeriesDataSchema.nullable(),
   isRewardShownMap: z.record(z.string(), z.boolean()),
-  // Optional for backward compatibility with legacy snapshots (schemaVersion 1).
-  // Merge code treats absent as an empty map.
   seriesTombstones: SeriesTombstonesSchema.optional(),
 });
 
@@ -203,13 +198,11 @@ export const StorageSchema = z.object({
 
 export const DriveSnapshotSchema = StorageSchema.extend({
   syncedAt: z.string(),
-  // schemaVersion 1: pre-tombstones. schemaVersion 2: current. Absent → treat as 1.
-  schemaVersion: z.number().optional(),
-  // Stable device UUID of whichever client wrote this snapshot. Diagnostics only.
+  cloudSchemaVersion: z.number().optional(),
   lastWriter: z.string().nullable().optional(),
 });
 
-export const CURRENT_DRIVE_SCHEMA_VERSION = 2;
+export const CURRENT_DRIVE_SCHEMA_VERSION = 1;
 
 export type SeriesTombstone = z.infer<typeof SeriesTombstoneSchema>;
 export type SeriesTombstones = z.infer<typeof SeriesTombstonesSchema>;
