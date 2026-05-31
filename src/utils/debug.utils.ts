@@ -1,22 +1,3 @@
-// Owner-only diagnostic globals.
-//
-// This module's import is a side effect — it registers `window.seenitDebug`
-// at load time so the helpers are callable from any browser console (dev or
-// prod, web or extension popup) without importing modules.
-//
-// Start with `window.seenitDebug.help()` to discover the available commands.
-//
-// Add new helpers by:
-//   1. Defining the function below.
-//   2. Adding it to the SeenitDebug interface.
-//   3. Adding a row in `help()`.
-//   4. Wiring it into the window assignment at the bottom.
-//
-// Safety note: every helper here ships in the production bundle. Anyone who
-// finds the global can call them. Only expose operations that read or affect
-// the caller's own data — never anything that could leak or modify another
-// user's data.
-
 import { SERIES_STORAGE_NAME } from '@/constants';
 import { useSyncStore } from '@/store';
 import { getOrCreateDeviceId } from '@/utils/device.utils';
@@ -26,10 +7,39 @@ import { mergeStates } from '@/utils/merge-snapshots.utils';
 import { chromeStorage } from '@/utils/storage.utils';
 import { DriveSnapshotSchema, PersistedSeriesStore, PersistedSeriesStoreSchema } from '@/zod-schemas';
 
-// ─── Private helpers ──────────────────────────────────────────────────────────
+interface SyncMetaSnapshot {
+  status: string;
+  phase: string;
+  isConnected: boolean;
+  fileId: string | null;
+  lastSyncedAt: string | null;
+  lastSeenModifiedTime: string | null;
+  error: string | null;
+}
 
-// Guard for Drive-dependent commands. Throws a friendly error so the console
-// shows something useful instead of a generic null reference.
+interface DryRunMergeResult {
+  local: PersistedSeriesStore | null;
+  cloud: PersistedSeriesStore | null;
+  merged: PersistedSeriesStore | null;
+  changed: boolean;
+}
+
+interface SeenitDebug {
+  help: () => void;
+  getSyncMeta: () => void;
+  getDeviceId: () => Promise<void>;
+  getLocalData: () => Promise<void>;
+  getCloudData: () => Promise<void>;
+  dryRunMerge: () => Promise<void>;
+}
+
+declare global {
+  interface Window {
+    seenitDebug?: SeenitDebug;
+  }
+}
+
+// Throw unless cloud sync is connected; returns the Drive fileId.
 const assertConnected = (): { fileId: string } => {
   const { isConnected, fileId } = useSyncStore.getState();
   if (!isConnected || !fileId) {
@@ -38,8 +48,7 @@ const assertConnected = (): { fileId: string } => {
   return { fileId };
 };
 
-// Read the currently-persisted series state from chromeStorage, validated by
-// Zod. Returns null on a fresh install or if the stored blob is unparseable.
+// Read the persisted local series state; null on fresh install or unparseable data.
 const readPersistedLocalState = async (): Promise<PersistedSeriesStore | null> => {
   const raw = await chromeStorage.getItem(SERIES_STORAGE_NAME);
   if (!raw) return null;
@@ -52,59 +61,39 @@ const readPersistedLocalState = async (): Promise<PersistedSeriesStore | null> =
   }
 };
 
-// ─── Helper implementations ──────────────────────────────────────────────────
+// Current connection / status / phase / last error.
+const getSyncMeta = (): void => {
+  const { status, phase, isConnected, fileId, lastSyncedAt, lastSeenModifiedTime, error } = useSyncStore.getState();
+  const meta: SyncMetaSnapshot = { status, phase, isConnected, fileId, lastSyncedAt, lastSeenModifiedTime, error };
 
-// Downloads and parses the current Drive snapshot for the connected account.
-// Useful for inspecting what the merge engine actually sees on a given device.
-const getCloudData = async (): Promise<unknown> => {
+  console.log('📺', 'Seenit Sync Meta', meta);
+};
+
+// Stable per-install UUID (embedded as `lastWriter` in every Drive snapshot).
+const getDeviceId = async (): Promise<void> => {
+  const deviceId = await getOrCreateDeviceId();
+
+  console.log('📺', 'Seenit Device ID', deviceId);
+};
+
+// Dump the persisted local series state.
+const getLocalData = async (): Promise<void> => {
+  const localData = await readPersistedLocalState();
+
+  console.log('📺', 'Seenit Local Data', localData);
+};
+
+// Download the current Drive snapshot.
+const getCloudData = async (): Promise<void> => {
   const { fileId } = assertConnected();
   const token = await getGoogleToken(false);
   const cloudData = await readDriveFile(token, fileId);
 
-  console.log('Seenit Cloud Data 📺', cloudData);
-
-  return cloudData;
+  console.log('📺', 'Seenit Cloud Data', cloudData);
 };
 
-// Dumps the persisted local series state — the same shape that lives in the
-// Drive snapshot's `state` field. Mirror of getCloudData() for local data.
-const getLocalData = async (): Promise<PersistedSeriesStore | null> => readPersistedLocalState();
-
-// Snapshot of the sync store excluding actions. Quick "where are we?" view:
-// connection state, last sync time, current phase, last error.
-interface SyncMetaSnapshot {
-  status: string;
-  phase: string;
-  isConnected: boolean;
-  fileId: string | null;
-  lastSyncedAt: string | null;
-  lastSeenModifiedTime: string | null;
-  error: string | null;
-}
-
-const getSyncMeta = (): SyncMetaSnapshot => {
-  const { status, phase, isConnected, fileId, lastSyncedAt, lastSeenModifiedTime, error } = useSyncStore.getState();
-
-  return { status, phase, isConnected, fileId, lastSyncedAt, lastSeenModifiedTime, error };
-};
-
-// Stable per-install UUID. The same value embedded as `lastWriter` in every
-// Drive snapshot this device pushes — useful for "did I write this, or did
-// another device?" investigations.
-const getDeviceId = (): Promise<string> => getOrCreateDeviceId();
-
-// Preview the merge without committing it. Pulls Drive, parses local, runs
-// mergeStates() in memory, returns all three states plus a `changed` flag
-// (true when the merge result differs from the current local state, i.e.
-// applying it would actually update something).
-interface DryRunMergeResult {
-  local: PersistedSeriesStore | null;
-  cloud: PersistedSeriesStore | null;
-  merged: PersistedSeriesStore | null;
-  changed: boolean;
-}
-
-const dryRunMerge = async (): Promise<DryRunMergeResult> => {
+// Preview mergeStates() without writing; `changed` flags a real update.
+const dryRunMerge = async (): Promise<void> => {
   const { fileId } = assertConnected();
   const token = await getGoogleToken(false);
 
@@ -115,6 +104,7 @@ const dryRunMerge = async (): Promise<DryRunMergeResult> => {
   const local = await readPersistedLocalState();
 
   let merged: PersistedSeriesStore | null;
+
   if (local && cloud) {
     merged = mergeStates(local, cloud);
   } else {
@@ -122,42 +112,26 @@ const dryRunMerge = async (): Promise<DryRunMergeResult> => {
   }
 
   const changed = JSON.stringify(merged) !== JSON.stringify(local);
-  return { local, cloud, merged, changed };
+  const result: DryRunMergeResult = { local, cloud, merged, changed };
+
+  console.log('📺', 'Seenit Dry Run Merge', result);
 };
 
-// Prints the available commands as a table. Single source of truth — keep
-// in sync with the SeenitDebug interface and the window assignment below.
+// Print available commands. Keep in sync with SeenitDebug.
 const help = (): void => {
   console.table([
-    { cmd: 'help()', returns: 'void', purpose: 'this table' },
-    { cmd: 'getSyncMeta()', returns: 'SyncMetaSnapshot', purpose: 'current connection / status / phase' },
-    { cmd: 'getDeviceId()', returns: 'Promise<string>', purpose: 'stable per-install UUID (lastWriter)' },
-    { cmd: 'getLocalData()', returns: 'Promise<state | null>', purpose: 'dump persisted local series state' },
-    { cmd: 'getCloudData()', returns: 'Promise<DriveSnapshot>', purpose: 'download the Drive snapshot' },
+    { cmd: 'help()', logs: 'this table', purpose: 'list available commands' },
+    { cmd: 'getSyncMeta()', logs: 'SyncMetaSnapshot', purpose: 'current connection / status / phase' },
+    { cmd: 'getDeviceId()', logs: 'string', purpose: 'stable per-install UUID (lastWriter)' },
+    { cmd: 'getLocalData()', logs: 'state | null', purpose: 'dump persisted local series state' },
+    { cmd: 'getCloudData()', logs: 'DriveSnapshot', purpose: 'download the Drive snapshot' },
     {
       cmd: 'dryRunMerge()',
-      returns: 'Promise<{local,cloud,merged,changed}>',
+      logs: '{local,cloud,merged,changed}',
       purpose: 'preview mergeStates() result without writing',
     },
   ]);
 };
-
-// ─── Public surface ───────────────────────────────────────────────────────────
-
-interface SeenitDebug {
-  help: () => void;
-  getSyncMeta: () => SyncMetaSnapshot;
-  getDeviceId: () => Promise<string>;
-  getLocalData: () => Promise<PersistedSeriesStore | null>;
-  getCloudData: () => Promise<unknown>;
-  dryRunMerge: () => Promise<DryRunMergeResult>;
-}
-
-declare global {
-  interface Window {
-    seenitDebug?: SeenitDebug;
-  }
-}
 
 if (typeof window !== 'undefined') {
   window.seenitDebug = {
