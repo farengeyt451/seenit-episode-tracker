@@ -14,7 +14,8 @@
     "dev": "nodemon --config nodemon.chrome.json",
     "dev:chrome": "nodemon --config nodemon.chrome.json",
     "dev:chrome:prod": "nodemon --config nodemon.chrome.json -- --mode production",
-    "dev:firefox": "nodemon --config nodemon.firefox.json"
+    "dev:firefox": "nodemon --config nodemon.firefox.json",
+    "check-types": "tsc"
   },
   "type": "module",
   "dependencies": {

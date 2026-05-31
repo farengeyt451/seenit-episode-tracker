@@ -5,7 +5,8 @@ export const chromeStorage: StateStorage = {
   getItem: async (key: string): Promise<Nullable<string>> => {
     if (chrome?.storage) {
       const result = await chrome.storage.local.get(key);
-      return result[key] || null;
+      const value = result[key];
+      return typeof value === 'string' ? value : null;
     } else {
       return localStorage.getItem(key);
     }
