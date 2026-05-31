@@ -55,6 +55,7 @@ enum SyncActionTypes {
   SyncNowError = 'syncNowError',
   TryReconnectSuccess = 'tryReconnectSuccess',
   TryReconnectError = 'tryReconnectError',
+  ClearError = 'clearError',
 }
 
 interface SyncState {
@@ -78,6 +79,7 @@ interface SyncActions {
   disconnect: () => Promise<void>;
   syncNow: () => Promise<void>;
   tryReconnect: () => Promise<void>;
+  clearError: () => void;
 }
 
 // ─── Private helpers ──────────────────────────────────────────────────────────
@@ -458,6 +460,18 @@ export const useSyncStore = create<SyncState & SyncActions>()(
                 SyncActionTypes.TryReconnectError,
               );
             }
+          },
+
+          // ════════════════════════════════════════════════════════════════════
+          // clearError — drop a failed-connect error so the UI resets to its
+          // idle state (e.g. the settings dialog reopening shows "Connect"
+          // again instead of "Reconnect"). No-op unless currently in Error so we
+          // never interrupt an in-flight sync.
+          // ════════════════════════════════════════════════════════════════════
+          clearError: () => {
+            if (get().status !== SyncStatus.Error) return;
+
+            set({ status: SyncStatus.Idle, error: null }, false, SyncActionTypes.ClearError);
           },
         }),
         {

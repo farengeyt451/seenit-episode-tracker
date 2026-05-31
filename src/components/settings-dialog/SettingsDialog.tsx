@@ -67,7 +67,7 @@ const SettingRowContent: FC<SettingRowContentProps> = ({ icon, title, descriptio
     data-tag={dataTag}
     className="flex min-w-0 items-center gap-3"
   >
-    {icon}
+    <div className="min-w-6">{icon}</div>
     <div className="min-w-0 text-left">
       <p className="light:text-gray-600 font-medium text-gray-100">{title}</p>
       <p className={clsx('light:text-slate-600 truncate text-sm', ROW_DESCRIPTION_COLOR[status])}>{description}</p>
@@ -93,17 +93,19 @@ export const SettingsDialog: FC = (): JSX.Element => {
 
   const activeSeriesId = useSeriesStore(state => state.activeSeriesId);
 
-  const { syncStatus, isConnected, lastSyncedAt, syncError, connect, disconnect, syncNow } = useSyncStore(
-    useShallow(state => ({
-      syncStatus: state.status,
-      isConnected: state.isConnected,
-      lastSyncedAt: state.lastSyncedAt,
-      syncError: state.error,
-      connect: state.connect,
-      disconnect: state.disconnect,
-      syncNow: state.syncNow,
-    })),
-  );
+  const { syncStatus, isConnected, lastSyncedAt, syncError, connect, disconnect, syncNow, clearSyncError } =
+    useSyncStore(
+      useShallow(state => ({
+        syncStatus: state.status,
+        isConnected: state.isConnected,
+        lastSyncedAt: state.lastSyncedAt,
+        syncError: state.error,
+        connect: state.connect,
+        disconnect: state.disconnect,
+        syncNow: state.syncNow,
+        clearSyncError: state.clearError,
+      })),
+    );
 
   const {
     isLicenseActivating,
@@ -171,6 +173,7 @@ export const SettingsDialog: FC = (): JSX.Element => {
     clearImportErrorMessage();
     clearImportSuccessMessage();
     clearLicenseActivationState();
+    clearSyncError();
     handleLicenseInputClear();
   };
 
@@ -426,7 +429,13 @@ export const SettingsDialog: FC = (): JSX.Element => {
                           disabled={syncStatus === SyncStatus.Syncing}
                           onClick={connect}
                         >
-                          {syncStatus === SyncStatus.Syncing ? <Spinner className="size-4 border-white" /> : 'Connect'}
+                          {syncStatus === SyncStatus.Syncing ? (
+                            <Spinner className="size-4 border-white" />
+                          ) : syncStatus === SyncStatus.Error ? (
+                            'Reconnect'
+                          ) : (
+                            'Connect'
+                          )}
                         </SeenItButton>
                       )}
                     </div>
