@@ -175,7 +175,7 @@ export const useLicenseStore = create<LicenseStatusStore & LicenseStatusStoreAct
         {
           name: LICENSE_STATUS_STORAGE_NAME,
           storage: createJSONStorage(() => encodedStorage),
-          version: 1.0,
+          version: 1,
           partialize: state => ({
             isLicenseActivated: state.isLicenseActivated,
             isLicenseChecked: state.isLicenseChecked,

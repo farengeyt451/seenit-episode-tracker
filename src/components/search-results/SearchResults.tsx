@@ -20,7 +20,7 @@ export const SearchResults: FC<SearchResultsProps> = ({ itemClick }): Nullable<J
   const [showEmptyMessage, setShowEmptyMessage] = useState(false);
 
   useEffect(() => {
-    let timeoutId: NodeJS.Timeout;
+    let timeoutId: ReturnType<typeof setTimeout>;
 
     if (searchData?.length === 0) {
       timeoutId = setTimeout(() => {
