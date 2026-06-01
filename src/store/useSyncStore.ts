@@ -297,6 +297,7 @@ export const useSyncStore = create<SyncState & SyncActions>()(
                 SyncActionTypes.ConnectSuccess,
               );
             } catch (err) {
+              console.error('Failed to connect to Google', err);
               const message = err instanceof Error ? err.message : 'Could not connect to Google. Please try again.';
               set(
                 { status: SyncStatus.Error, phase: SyncPhase.Idle, error: message, isConnected: false },

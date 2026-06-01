@@ -1,3 +1,4 @@
+import '@/config/zod.config';
 import Popup from '@/pages/popup/Popup';
 import '@assets/styles/tailwind.css';
 import { createRoot } from 'react-dom/client';
