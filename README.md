@@ -51,6 +51,8 @@
 
 ### Cloud Sync (Google Drive)
 
+> **Chrome only.** Cloud Sync is available on Chrome; the Firefox build does not include it.
+
 - **Google Drive Sync** - Optionally back up and sync your tracking data to your own Google Drive
 - **Cross-Device** - Connect on multiple devices and pick up right where you left off
 - **Automatic & Manual** - Changes are pushed to Drive automatically (debounced) after you edit, with a manual "Sync now" option in Settings
@@ -85,7 +87,9 @@
 
 #### For Firefox
 
-1. Download the latest release or build from source
+> Firefox is supported on the **v1.0.2** tag (no Cloud Sync). Check it out before building: `git checkout v1.0.2`
+
+1. Download the **v1.0.2** tag from git (`git checkout v1.0.2`) or build from that source
 2. Open Firefox and navigate to `about:debugging#/runtime/this-firefox`
 3. Click "Load Temporary Add-on"
 4. Select any file in the `dist_firefox` folder (e.g., `manifest.json`)
