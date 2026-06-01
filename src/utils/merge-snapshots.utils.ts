@@ -1,5 +1,6 @@
 import { TOMBSTONE_TTL_MS } from '@/constants';
 import { PersistedSeriesStore, SeriesTombstones } from '@/zod-schemas';
+import { Nullable } from 'src/utility-types';
 
 // Union rule: for any key present in either map, true wins over false / absent.
 // Used for trackingSeriesMap, favoritesSeriesMap, and isRewardShownMap
@@ -223,6 +224,21 @@ const filterMap = <T>(map: Record<string, T>, deadIds: Set<string>): Record<stri
   return out;
 };
 
+const setActiveSeriesId = (local: PersistedSeriesStore, cloud: PersistedSeriesStore): Nullable<number> => {
+  let activeSeriesId: Nullable<number> = null;
+
+  if (local.activeSeriesId) {
+    activeSeriesId = local.activeSeriesId;
+  } else if (local.seriesData?.length) {
+    activeSeriesId = local.seriesData.at(0)?.id ?? null;
+  } else if (cloud.activeSeriesId) {
+    activeSeriesId = cloud.activeSeriesId;
+  } else if (cloud.seriesData?.length) {
+    activeSeriesId = cloud.seriesData.at(0)?.id ?? null;
+  }
+
+  return activeSeriesId;
+};
 export const mergeStates = (local: PersistedSeriesStore, cloud: PersistedSeriesStore): PersistedSeriesStore => {
   const localTombstones = local.seriesTombstones ?? {};
   const cloudTombstones = cloud.seriesTombstones ?? {};
@@ -235,7 +251,7 @@ export const mergeStates = (local: PersistedSeriesStore, cloud: PersistedSeriesS
   );
 
   const merged: PersistedSeriesStore = {
-    activeSeriesId: local.activeSeriesId,
+    activeSeriesId: setActiveSeriesId(local, cloud),
     seriesData: mergeSeriesData(local.seriesData, cloud.seriesData),
     trackingSeriesMap: mergeBooleanMaps(local.trackingSeriesMap, cloud.trackingSeriesMap),
     favoritesSeriesMap: mergeBooleanMaps(local.favoritesSeriesMap, cloud.favoritesSeriesMap),
