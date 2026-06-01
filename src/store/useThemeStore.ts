@@ -4,6 +4,8 @@ import { encodedStorage } from '@/utils/storage.utils';
 import { create } from 'zustand';
 import { createJSONStorage, devtools, persist } from 'zustand/middleware';
 
+const THEME_STORE_VERSION = 1;
+
 type ThemeStore = {
   theme: Theme;
 };
@@ -33,7 +35,7 @@ export const useThemeStore = create<ThemeStore & ThemeActions>()(
       {
         name: THEME_STORAGE_NAME,
         storage: createJSONStorage(() => encodedStorage),
-        version: 1.0,
+        version: THEME_STORE_VERSION,
       },
     ),
     { name: 'Store', store: 'theme' },

@@ -92,6 +92,7 @@ export const SeriesHeader: FC<SeriesHeaderProps> = ({
           className={clsx(actionButtonBaseClasses)}
           disabled={isRefreshing}
           aria-label="Refresh series data"
+          title="Refresh series data"
           onClick={refreshSeriesData}
         >
           <ArrowPathIcon
@@ -108,6 +109,7 @@ export const SeriesHeader: FC<SeriesHeaderProps> = ({
             className={actionButtonBaseClasses}
             disabled={isRefreshing || !isLicenseActivated}
             aria-label="Toggle favorites"
+            title="Toggle favorites"
             onClick={toggleFavorites}
           >
             <StarIcon
@@ -129,6 +131,7 @@ export const SeriesHeader: FC<SeriesHeaderProps> = ({
           className={actionButtonBaseClasses}
           disabled={isRefreshing}
           aria-label="Remove series"
+          title="Remove series"
           onClick={remove}
         >
           <TrashIcon

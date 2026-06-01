@@ -4,9 +4,12 @@ import { Series, TrackingSeriesData } from '@/types';
 import { Nullable } from '@/utility-types';
 import { createTrackingSeriesData, fetchSeriesMetadata, getDateInISO, updateTrackingSeriesData } from '@/utils';
 import { chromeStorage } from '@/utils/storage.utils';
+import { SeriesTombstones } from '@/zod-schemas';
 import { create } from 'zustand';
 import { createJSONStorage, devtools, persist } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
+
+const SERIES_STORE_VERSION = 2;
 
 enum SeriesActionTypes {
   InitLoading = 'initLoading',
@@ -40,6 +43,9 @@ type SeriesStore = {
   isRewardShownMap: Record<string, boolean>;
   favoritesSeriesMap: Record<string, boolean>;
   trackingSeriesData: Nullable<TrackingSeriesData>;
+  // Soft-delete markers for series that the user removed. Synced via Drive
+  // so deletions propagate across devices. See docs/sync-merge-strategy.md.
+  seriesTombstones: SeriesTombstones;
   isLoading: boolean;
   isRefreshing: boolean;
   error: Nullable<string>;
@@ -64,6 +70,7 @@ const initialState: SeriesStore = {
   isRewardShownMap: {},
   favoritesSeriesMap: {},
   trackingSeriesData: {},
+  seriesTombstones: {},
   isLoading: false,
   isRefreshing: false,
   error: null,
@@ -99,6 +106,10 @@ export const useSeriesStore = create<SeriesStore & SeriesActions>()(
                     }
 
                     draft.trackingSeriesData[newSeries.id] = createTrackingSeriesData(newSeries);
+
+                    // Re-adding a previously deleted series clears its tombstone
+                    // so the deletion doesn't propagate back from another device.
+                    delete draft.seriesTombstones[String(newSeries.id)];
                   },
                   false,
                   SeriesActionTypes.InitSuccess,
@@ -185,11 +196,18 @@ export const useSeriesStore = create<SeriesStore & SeriesActions>()(
 
                 const seriesIdIndex = draft.seriesData.findIndex(storedSeries => storedSeries.id === seriesId);
 
-                draft.seriesData.splice(seriesIdIndex, 1);
+                if (seriesIdIndex > -1) {
+                  draft.seriesData.splice(seriesIdIndex, 1);
+                }
                 delete draft.trackingSeriesData[seriesId];
                 delete draft.trackingSeriesMap[seriesId];
                 delete draft.isRewardShownMap[seriesId];
                 delete draft.favoritesSeriesMap[seriesId];
+
+                // Tombstone the removal so the next sync propagates it to other devices.
+                // Merge logic uses this to distinguish "intentionally deleted" from
+                // "never tracked here". See docs/sync-merge-strategy.md.
+                draft.seriesTombstones[String(seriesId)] = { deletedAt: getDateInISO() };
 
                 draft.activeSeriesId = draft.seriesData.length > 0 ? draft.seriesData[0].id : null;
               },
@@ -283,7 +301,7 @@ export const useSeriesStore = create<SeriesStore & SeriesActions>()(
         {
           name: SERIES_STORAGE_NAME,
           storage: createJSONStorage(() => chromeStorage),
-          version: 1.0,
+          version: SERIES_STORE_VERSION,
           partialize: state => ({
             seriesData: state.seriesData,
             activeSeriesId: state.activeSeriesId,
@@ -291,7 +309,15 @@ export const useSeriesStore = create<SeriesStore & SeriesActions>()(
             favoritesSeriesMap: state.favoritesSeriesMap,
             trackingSeriesData: state.trackingSeriesData,
             isRewardShownMap: state.isRewardShownMap,
+            seriesTombstones: state.seriesTombstones,
           }),
+          migrate: persisted => {
+            const obj = (persisted ?? {}) as Partial<SeriesStore>;
+            if (!obj.seriesTombstones) {
+              obj.seriesTombstones = {};
+            }
+            return obj as SeriesStore & SeriesActions;
+          },
         },
       ),
     ),

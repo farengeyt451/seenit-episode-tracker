@@ -1,7 +1,7 @@
-import { SupportBlock } from '@/components';
 import { LockWrapper, SeenItButton, SeenitInput } from '@/components/ui';
+import { SyncStatus } from '@/enums';
 import { useBackup } from '@/hooks';
-import { useLicenseStore, useSeriesStore } from '@/store';
+import { useLicenseStore, useSeriesStore, useSyncStore } from '@/store';
 import { Nullable } from '@/utility-types';
 import { Button, Dialog, DialogPanel, DialogTitle, Field } from '@headlessui/react';
 import { BackspaceIcon, ExclamationCircleIcon } from '@heroicons/react/24/outline';
@@ -11,12 +11,69 @@ import {
   ArrowRightIcon,
   ArrowUpTrayIcon,
   CheckCircleIcon,
+  CloudArrowUpIcon,
   Cog6ToothIcon,
   XMarkIcon,
 } from '@heroicons/react/24/solid';
 import { clsx } from 'clsx';
-import { ChangeEvent, FC, JSX, useRef, useState } from 'react';
+import { DateTime } from 'luxon';
+import { ChangeEvent, FC, JSX, ReactNode, useRef, useState } from 'react';
 import { useShallow } from 'zustand/shallow';
+
+type SettingRowStatus = 'default' | 'loading' | 'success' | 'error';
+
+const ROW_CONTAINER_CLASS = 'light:bg-slate-100 flex w-full items-center justify-between rounded-lg bg-gray-700/50 p-3';
+
+const ROW_BUTTON_CLASS = clsx(
+  ROW_CONTAINER_CLASS,
+  'light:hover:bg-slate-200 cursor-pointer transition-colors hover:bg-gray-700',
+  'disabled:pointer-events-none disabled:opacity-50',
+);
+
+const ROW_DESCRIPTION_COLOR: Record<SettingRowStatus, string> = {
+  default: 'text-gray-400',
+  loading: 'text-gray-400',
+  success: 'text-green-400',
+  error: 'text-red-400',
+};
+
+const Spinner: FC<{ className?: string }> = ({ className }) => (
+  <div className={clsx('shrink-0 animate-spin rounded-full border-2 border-t-transparent', className)} />
+);
+
+const renderStatusIcon = (status: SettingRowStatus, idleIcon: ReactNode): ReactNode => {
+  switch (status) {
+    case 'loading':
+      return <Spinner className="size-5 border-blue-400" />;
+    case 'success':
+      return <CheckCircleIcon className="size-5 shrink-0 text-green-400" />;
+    case 'error':
+      return <ExclamationCircleIcon className="size-6 shrink-0 text-red-500" />;
+    default:
+      return idleIcon;
+  }
+};
+
+interface SettingRowContentProps {
+  icon: ReactNode;
+  title: string;
+  description: string;
+  status?: SettingRowStatus;
+  dataTag?: string;
+}
+
+const SettingRowContent: FC<SettingRowContentProps> = ({ icon, title, description, status = 'default', dataTag }) => (
+  <div
+    data-tag={dataTag}
+    className="flex min-w-0 items-center gap-3"
+  >
+    <div className="min-w-6">{icon}</div>
+    <div className="min-w-0 text-left">
+      <p className="light:text-gray-600 font-medium text-gray-100">{title}</p>
+      <p className={clsx('light:text-slate-600 truncate text-sm', ROW_DESCRIPTION_COLOR[status])}>{description}</p>
+    </div>
+  </div>
+);
 
 export const SettingsDialog: FC = (): JSX.Element => {
   const [isOpen, setIsOpen] = useState(false);
@@ -36,6 +93,20 @@ export const SettingsDialog: FC = (): JSX.Element => {
 
   const activeSeriesId = useSeriesStore(state => state.activeSeriesId);
 
+  const { syncStatus, isConnected, lastSyncedAt, syncError, connect, disconnect, syncNow, clearSyncError } =
+    useSyncStore(
+      useShallow(state => ({
+        syncStatus: state.status,
+        isConnected: state.isConnected,
+        lastSyncedAt: state.lastSyncedAt,
+        syncError: state.error,
+        connect: state.connect,
+        disconnect: state.disconnect,
+        syncNow: state.syncNow,
+        clearSyncError: state.clearError,
+      })),
+    );
+
   const {
     isLicenseActivating,
     isLicenseActivated,
@@ -54,30 +125,47 @@ export const SettingsDialog: FC = (): JSX.Element => {
     })),
   );
 
-  const getImportIcon = () => {
-    if (isImporting) {
-      return <div className="size-5 animate-spin rounded-full border-2 border-blue-500 border-t-transparent" />;
-    }
-    if (importErrorMessage) {
-      return <ExclamationCircleIcon className="size-5 text-red-500" />;
-    }
-    if (isImportSuccess) {
-      return <CheckCircleIcon className="size-5 text-green-400" />;
-    }
-    return <ArrowUpTrayIcon className="size-5 text-blue-400" />;
+  const getImportStatus = (): SettingRowStatus => {
+    if (isImporting) return 'loading';
+    if (importErrorMessage) return 'error';
+    if (isImportSuccess) return 'success';
+    return 'default';
   };
 
-  const getImportTitle = () => {
+  const getImportTitle = (): string => {
     if (importErrorMessage) return 'Import Failed';
     if (isImportSuccess) return 'Import Successful';
     return 'Import Backup';
   };
 
-  const getImportDescription = () => {
+  const getImportDescription = (): string => {
     if (importErrorMessage) return importErrorMessage;
     if (isImporting) return 'Restoring data...';
     if (isImportSuccess) return 'Data restored successfully';
     return 'Restore your tracking data';
+  };
+
+  const getSyncStatus = (): SettingRowStatus => {
+    if (syncStatus === SyncStatus.Syncing) return 'loading';
+    if (syncStatus === SyncStatus.Error) return 'error';
+    if (isConnected) return 'success';
+    return 'default';
+  };
+
+  const getSyncDescription = (): string => {
+    if (syncStatus === SyncStatus.Syncing) return 'Syncing...';
+    if (syncStatus === SyncStatus.Error) {
+      return isConnected && syncError ? syncError : 'Failed to connect. Please try again.';
+    }
+    if (isConnected) return formatLastSynced();
+    return 'Sync your data across devices';
+  };
+
+  const formatLastSynced = (): string => {
+    if (!lastSyncedAt) return 'Never synced';
+    const relative = DateTime.fromISO(lastSyncedAt).toRelative({ style: 'short' });
+
+    return relative ? `Last synced ${relative}` : 'Synced recently';
   };
 
   const handleModalOpen = () => {
@@ -85,6 +173,7 @@ export const SettingsDialog: FC = (): JSX.Element => {
     clearImportErrorMessage();
     clearImportSuccessMessage();
     clearLicenseActivationState();
+    clearSyncError();
     handleLicenseInputClear();
   };
 
@@ -108,24 +197,28 @@ export const SettingsDialog: FC = (): JSX.Element => {
     activateLicense(licenseKey, controller.signal);
   };
 
+  const syncRowStatus = getSyncStatus();
+  const importRowStatus = getImportStatus();
+
   return (
     <div data-tag="settings">
-      {/* Settings Icon Button */}
       <Button
         data-tag="settings__button"
         onClick={handleModalOpen}
         className={clsx(
-          'group rounded-lg p-1.5 transition-colors duration-150',
-          'bg-gray-700 transition-colors duration-150 ease-out data-hover:bg-gray-600',
-          'light:bg-blue-600 light:border light:border-slate-200 light:data-hover:bg-blue-700',
-          'cursor-pointer',
+          'group relative flex size-7 cursor-pointer items-center justify-center rounded-full',
+          'disabled:pointer-events-none',
         )}
         aria-label="Open settings"
         title="Settings"
       >
         <Cog6ToothIcon
           data-tag="settings__icon"
-          className="size-5 text-white duration-300 group-hover:rotate-35"
+          className={clsx(
+            'size-6 transition-all duration-300 ease-out',
+            'text-gray-300 group-hover:rotate-45 group-hover:text-white',
+            'light:text-slate-600 light:group-hover:text-slate-900',
+          )}
         />
       </Button>
 
@@ -149,7 +242,7 @@ export const SettingsDialog: FC = (): JSX.Element => {
             transition
             className={clsx(
               'light:bg-gray-300 relative w-full rounded-xl bg-gray-800 p-6 shadow-xl',
-              'min-h-[420px]',
+              'min-h-105',
               'duration-300 ease-out data-closed:transform-[scale(95%)] data-closed:opacity-0',
               'overflow-hidden',
             )}
@@ -285,27 +378,81 @@ export const SettingsDialog: FC = (): JSX.Element => {
                   </section>
                 )}
 
+                {/* Cloud Sync Section */}
+                <section
+                  data-tag="settings__cloud-sync"
+                  className="mt-2"
+                >
+                  <h3 className="light:text-slate-600 text-sm font-medium text-gray-400">Cloud Sync</h3>
+
+                  <div className="mt-3">
+                    <div
+                      data-tag="settings__cloud-sync-row"
+                      className={ROW_CONTAINER_CLASS}
+                    >
+                      <SettingRowContent
+                        dataTag="settings__cloud-sync-info"
+                        icon={renderStatusIcon(
+                          syncRowStatus,
+                          <CloudArrowUpIcon className="size-5 shrink-0 text-blue-400" />,
+                        )}
+                        title="Google Drive"
+                        description={getSyncDescription()}
+                        status={syncRowStatus}
+                      />
+
+                      {isConnected ? (
+                        <div className="flex items-center gap-2">
+                          <SeenItButton
+                            data-tag="settings__cloud-sync-sync"
+                            colorType="primary"
+                            size="small"
+                            disabled={syncStatus === SyncStatus.Syncing}
+                            onClick={syncNow}
+                          >
+                            Sync
+                          </SeenItButton>
+                          <SeenItButton
+                            data-tag="settings__cloud-sync-disconnect"
+                            colorType="secondary"
+                            size="small"
+                            onClick={disconnect}
+                          >
+                            Disconnect
+                          </SeenItButton>
+                        </div>
+                      ) : (
+                        <SeenItButton
+                          data-tag="settings__cloud-sync-connect"
+                          colorType="primary"
+                          size="small"
+                          disabled={syncStatus === SyncStatus.Syncing}
+                          onClick={connect}
+                        >
+                          {syncStatus === SyncStatus.Error ? 'Reconnect' : 'Connect'}
+                        </SeenItButton>
+                      )}
+                    </div>
+                  </div>
+                </section>
+
                 {/* Data Management Section */}
                 <section data-tag="settings__data-management">
                   <h3 className="light:text-slate-600 mt-2 text-sm font-medium text-gray-400">Data Management</h3>
                   <div className="mt-4 flex flex-col gap-3">
                     <LockWrapper>
                       <Button
+                        data-tag="settings__data-export"
                         onClick={exportData}
                         disabled={!isLicenseActivated || !activeSeriesId}
-                        className={clsx(
-                          'light:bg-slate-100 light:hover:bg-slate-200 flex w-full items-center justify-between rounded-lg bg-gray-700/50 p-3 transition-colors hover:bg-gray-700',
-                          'disabled:pointer-events-none disabled:opacity-50',
-                          'cursor-pointer',
-                        )}
+                        className={ROW_BUTTON_CLASS}
                       >
-                        <div className="flex items-center gap-3">
-                          <ArrowDownTrayIcon className="size-5 text-green-400" />
-                          <div className="text-left">
-                            <p className="light:text-gray-600 font-medium text-gray-100">Export Backup</p>
-                            <p className="light:text-slate-600 text-sm text-gray-400">Save your series tracking data</p>
-                          </div>
-                        </div>
+                        <SettingRowContent
+                          dataTag="settings__data-export-info"
+                          icon={<ArrowDownTrayIcon className="size-5 shrink-0 text-green-400" />}
+                          title="Export Backup"
+                          description="Save your series tracking data"
+                        />
                         <span className="light:text-blue-600 flex items-center gap-1 text-sm font-semibold text-blue-400">
                           Export <ArrowRightIcon className="size-3" />
                         </span>
@@ -314,30 +461,21 @@ export const SettingsDialog: FC = (): JSX.Element => {
 
                     <LockWrapper>
                       <Button
+                        data-tag="settings__data-import"
                         onClick={importData}
                         disabled={!isLicenseActivated}
-                        className={clsx(
-                          'light:bg-slate-100 light:hover:bg-slate-200 flex w-full items-center justify-between rounded-lg bg-gray-700/50 p-3 text-gray-100 transition-colors hover:bg-gray-700',
-                          'disabled:pointer-events-none disabled:opacity-50',
-                          'cursor-pointer',
-                          (isImportSuccess || isImporting) && 'pointer-events-none',
-                        )}
+                        className={clsx(ROW_BUTTON_CLASS, (isImportSuccess || isImporting) && 'pointer-events-none')}
                       >
-                        <div className="flex items-center gap-3">
-                          {getImportIcon()}
-                          <div className="text-left">
-                            <p
-                              className={clsx(
-                                'light:text-gray-600 font-medium',
-                                importErrorMessage && 'text-red-500',
-                                isImportSuccess && 'text-green-400',
-                              )}
-                            >
-                              {getImportTitle()}
-                            </p>
-                            <p className="light:text-slate-600 text-sm text-gray-400">{getImportDescription()}</p>
-                          </div>
-                        </div>
+                        <SettingRowContent
+                          dataTag="settings__data-import-info"
+                          icon={renderStatusIcon(
+                            importRowStatus,
+                            <ArrowUpTrayIcon className="size-5 shrink-0 text-blue-400" />,
+                          )}
+                          title={getImportTitle()}
+                          description={getImportDescription()}
+                          status={importRowStatus}
+                        />
                         {!isImporting && !isImportSuccess && (
                           <span className="light:text-blue-600 flex items-center gap-1 text-sm font-semibold text-blue-400">
                             <ArrowLeftIcon className="size-3" /> {importErrorMessage ? 'Retry' : 'Import'}
@@ -347,15 +485,6 @@ export const SettingsDialog: FC = (): JSX.Element => {
                     </LockWrapper>
                   </div>
                 </section>
-
-                {/* Pro Features Info or Success Message */}
-                {/* Disable Pro version */}
-                {/* <div
-                  data-tag="settings__support"
-                  className="mt-4"
-                >
-                  <SupportBlock isActivated={isLicenseActivated} />
-                </div> */}
               </div>
             </div>
           </DialogPanel>

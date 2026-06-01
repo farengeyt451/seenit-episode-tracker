@@ -1,10 +1,10 @@
 import { SettingsDialog } from '@/components';
 import { LockWrapper, SupportLink } from '@/components/ui';
-import { Theme } from '@/enums';
-import { useLicenseStore, useSidebarStore, useThemeStore } from '@/store';
+import { SyncPhase, Theme } from '@/enums';
+import { useLicenseStore, useSidebarStore, useSyncStore, useThemeStore } from '@/store';
 import { Button } from '@headlessui/react';
 import { ArrowLongRightIcon } from '@heroicons/react/20/solid';
-import { MoonIcon, SunIcon } from '@heroicons/react/24/solid';
+import { CloudArrowDownIcon, CloudArrowUpIcon, CloudIcon, MoonIcon, SunIcon } from '@heroicons/react/24/solid';
 import { clsx } from 'clsx';
 import { JSX, memo, useEffect } from 'react';
 import { useShallow } from 'zustand/shallow';
@@ -20,11 +20,35 @@ export const Header = memo((): JSX.Element => {
 
   const isLicenseActivated = useLicenseStore(state => state.isLicenseActivated);
 
+  const { isConnected, syncPhase, syncNow } = useSyncStore(
+    useShallow(state => ({
+      isConnected: state.isConnected,
+      syncPhase: state.phase,
+      syncNow: state.syncNow,
+    })),
+  );
+
   const isDarkTheme = theme === Theme.Dark;
+  const isPulling = syncPhase === SyncPhase.Pulling;
+  const isPushing = syncPhase === SyncPhase.Pushing;
+  const isCloudIdle = syncPhase === SyncPhase.Idle;
 
   const handleToggleTheme = () => {
     setTheme(theme === Theme.Light ? Theme.Dark : Theme.Light);
   };
+
+  const handleCloudSync = () => {
+    if (!isConnected) return;
+    syncNow();
+  };
+
+  const cloudButtonLabel = !isConnected
+    ? 'Cloud sync — not connected'
+    : isPulling
+      ? 'Pulling changes from Google Drive'
+      : isPushing
+        ? 'Pushing changes to Google Drive'
+        : 'Sync with Google Drive';
 
   const handleButtonMenuClick = () => {
     setSidebarOpenState(true);
@@ -84,6 +108,54 @@ export const Header = memo((): JSX.Element => {
         {!isLicenseActivated && (
           <div data-tag="header__support">
             <SupportLink />
+          </div>
+        )}
+
+        {isConnected && (
+          <div data-tag="header__cloud">
+            <Button
+              data-tag="header__action-cloud"
+              className={clsx(
+                'relative flex size-7 items-center justify-center rounded-full text-xl',
+                'cursor-pointer disabled:pointer-events-none disabled:cursor-default',
+              )}
+              disabled={!isConnected}
+              aria-label={cloudButtonLabel}
+              title={cloudButtonLabel}
+              onClick={handleCloudSync}
+            >
+              <CloudIcon
+                data-tag="header__icon-cloud-idle"
+                aria-hidden="true"
+                className={clsx(
+                  'absolute size-6 transition-all duration-300 ease-out',
+                  isCloudIdle ? 'scale-100 rotate-0 opacity-100' : 'scale-75 -rotate-12 opacity-0',
+                  isConnected
+                    ? 'light:text-sky-600 light:hover:text-sky-700 text-sky-400 hover:text-sky-300'
+                    : 'light:text-slate-400 text-gray-500',
+                )}
+              />
+
+              <CloudArrowDownIcon
+                data-tag="header__icon-cloud-pull"
+                aria-hidden="true"
+                className={clsx(
+                  'absolute size-6 transition-all duration-300 ease-out',
+                  'light:text-sky-600 text-sky-400',
+                  isPulling ? 'animate-cloud-pull scale-100 opacity-100' : 'scale-75 opacity-0',
+                )}
+              />
+
+              <CloudArrowUpIcon
+                data-tag="header__icon-cloud-push"
+                aria-hidden="true"
+                className={clsx(
+                  'absolute size-6 transition-all duration-300 ease-out',
+                  'light:text-sky-600 text-sky-400',
+                  isPushing ? 'animate-cloud-push scale-100 opacity-100' : 'scale-75 opacity-0',
+                )}
+              />
+            </Button>
           </div>
         )}
 

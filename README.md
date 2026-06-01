@@ -45,9 +45,19 @@
 
 ### Data Management
 
-- **100% Local Storage** - All data stored locally using Chrome Storage API
+- **Local-First Storage** - All data is stored locally by default using the Chrome Storage API
 - **Export/Import** - Backup and restore your tracking data
 - **Auto-Refresh** - Keep series metadata up to date
+
+### Cloud Sync (Google Drive)
+
+> **Chrome only.** Cloud Sync is available on Chrome; the Firefox build does not include it.
+
+- **Google Drive Sync** - Optionally back up and sync your tracking data to your own Google Drive
+- **Cross-Device** - Connect on multiple devices and pick up right where you left off
+- **Automatic & Manual** - Changes are pushed to Drive automatically (debounced) after you edit, with a manual "Sync now" option in Settings
+- **Conflict-Free Merge** - A smart merge reconciles changes from different devices, including episode progress and deletions, so nothing is lost
+- **Private by Design** - Data lives in Drive's hidden app-data folder via the minimal `drive.appdata` scope — the extension can't access any of your other Drive files, and there are no third-party servers involved
 
 ---
 
@@ -77,7 +87,9 @@
 
 #### For Firefox
 
-1. Download the latest release or build from source
+> Firefox is supported on the **v1.0.2** tag (no Cloud Sync). Check it out before building: `git checkout v1.0.2`
+
+1. Download the **v1.0.2** tag from git (`git checkout v1.0.2`) or build from that source
 2. Open Firefox and navigate to `about:debugging#/runtime/this-firefox`
 3. Click "Load Temporary Add-on"
 4. Select any file in the `dist_firefox` folder (e.g., `manifest.json`)
@@ -143,6 +155,7 @@ Output will be in `dist_chrome` or `dist_firefox` folders.
 - **[Immer 11.1](https://immerjs.github.io/immer/)**
 - **[Zod 4.2](https://zod.dev/)**
 - **Chrome Storage API**
+- **[Google Drive API](https://developers.google.com/drive)** - Optional cloud sync via the `drive.appdata` scope (OAuth through `chrome.identity`)
 
 ### UI Components
 

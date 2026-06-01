@@ -6,6 +6,8 @@ import { create } from 'zustand';
 import { createJSONStorage, devtools, persist } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 
+const LICENSE_STORE_VERSION = 1;
+
 enum LicenseActionTypes {
   Activating = 'activating',
   ActivatedSuccess = 'activatedSuccess',
@@ -175,7 +177,7 @@ export const useLicenseStore = create<LicenseStatusStore & LicenseStatusStoreAct
         {
           name: LICENSE_STATUS_STORAGE_NAME,
           storage: createJSONStorage(() => encodedStorage),
-          version: 1.0,
+          version: LICENSE_STORE_VERSION,
           partialize: state => ({
             isLicenseActivated: state.isLicenseActivated,
             isLicenseChecked: state.isLicenseChecked,
