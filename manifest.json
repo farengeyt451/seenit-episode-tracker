@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Seenit! - Episode Tracker",
-  "description": "Never lose your place in a show again. Track what you've watched and pick up right where you left off",
+  "description": "Never lose your place in a show again. Track what you've watched and pick up right where you left off.",
   "version": "1.0.4",
   "permissions": [
     "storage",
