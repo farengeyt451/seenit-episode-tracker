@@ -11,7 +11,7 @@
 
 import { SYNC_DEBOUNCE_MS } from '@/constants';
 import { useSeriesStore } from '@/store/useSeriesStore';
-import { useSyncStore } from '@/store/useSyncStore';
+import { isSyncApplyingRemoteWrite, useSyncStore } from '@/store/useSyncStore';
 import { useEffect, useRef } from 'react';
 
 export const useGoogleSync = (): void => {
@@ -34,6 +34,8 @@ export const useGoogleSync = (): void => {
     let debounceTimer: ReturnType<typeof setTimeout>;
 
     const unsubscribe = useSeriesStore.subscribe(() => {
+      if (isSyncApplyingRemoteWrite()) return;
+
       clearTimeout(debounceTimer);
       debounceTimer = setTimeout(syncNow, SYNC_DEBOUNCE_MS);
     });

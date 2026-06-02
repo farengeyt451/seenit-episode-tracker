@@ -26,6 +26,11 @@ import { useSeriesStore } from './useSeriesStore';
 
 const SYNC_STORE_VERSION = 1;
 
+let isApplyingRemoteWrite = false;
+
+// True while runSyncCycle is rehydrating useSeriesStore with merged remote data.
+export const isSyncApplyingRemoteWrite = (): boolean => isApplyingRemoteWrite;
+
 enum SyncActionTypes {
   ConnectSyncing = 'connectSyncing',
   ConnectSuccess = 'connectSuccess',
@@ -83,7 +88,14 @@ const readLocalSnapshot = async (): Promise<LocalSnapshot | null> => {
 const writeLocalSnapshot = async (state: PersistedSeriesStore, version: number): Promise<void> => {
   const payload = JSON.stringify({ state, version });
   await chromeStorage.setItem(SERIES_STORAGE_NAME, payload);
-  await useSeriesStore.persist.rehydrate();
+
+  isApplyingRemoteWrite = true;
+
+  try {
+    await useSeriesStore.persist.rehydrate();
+  } finally {
+    isApplyingRemoteWrite = false;
+  }
 };
 
 // Empty state used when the user has nothing yet
@@ -339,8 +351,8 @@ export const useSyncStore = create<SyncState & SyncActions>()(
           // forceFullPull=false. When Drive's modifiedTime matches our cached
           // lastSeenModifiedTime, no body fetch happens; we push directly.
           syncNow: async () => {
-            const { isConnected, fileId, lastSeenModifiedTime } = get();
-            if (!isConnected) return;
+            const { isConnected, fileId, lastSeenModifiedTime, status } = get();
+            if (!isConnected || status === SyncStatus.Syncing) return;
 
             set(
               { status: SyncStatus.Syncing, phase: SyncPhase.Pulling, error: null },

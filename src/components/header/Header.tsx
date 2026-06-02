@@ -119,7 +119,7 @@ export const Header = memo((): JSX.Element => {
                 'relative flex size-7 items-center justify-center rounded-full text-xl',
                 'cursor-pointer disabled:pointer-events-none disabled:cursor-default',
               )}
-              disabled={!isConnected}
+              disabled={syncPhase !== SyncPhase.Idle}
               aria-label={cloudButtonLabel}
               title={cloudButtonLabel}
               onClick={handleCloudSync}
