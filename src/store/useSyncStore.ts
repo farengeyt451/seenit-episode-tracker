@@ -2,7 +2,7 @@ import { DRIVE_FILE_NAME, SERIES_STORAGE_NAME, SYNC_META_STORAGE_NAME, SYNC_PHAS
 import { SyncPhase, SyncStatus } from '@/enums';
 import { Nullable } from '@/utility-types';
 import { getOrCreateDeviceId } from '@/utils';
-import { getGoogleToken, revokeGoogleToken } from '@/utils/google-auth.utils';
+import { getGoogleToken, removeIdentityPermission, revokeGoogleToken } from '@/utils/google-auth.utils';
 import {
   createDriveFile,
   findDriveFile,
@@ -330,6 +330,10 @@ export const useSyncStore = create<SyncState & SyncActions>()(
               // we still clear local connection state.
               console.error('Failed to revoke Google token', err);
             }
+
+            // Drop the optional "identity" permission so it stays dynamic — the
+            // extension only holds Google access while Drive sync is connected.
+            await removeIdentityPermission();
 
             set(
               {

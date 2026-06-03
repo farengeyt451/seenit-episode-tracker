@@ -35,14 +35,52 @@ const DRIVE_SCOPE = 'https://www.googleapis.com/auth/drive.appdata';
 const SESSION_TOKEN_KEY = 'seenit-gis-token';
 const SESSION_TOKEN_EXPIRY_KEY = 'seenit-gis-token-expiry';
 
-const isExtension = (): boolean => typeof chrome !== 'undefined' && !!chrome?.identity;
+const isExtension = (): boolean => typeof chrome !== 'undefined' && !!chrome?.runtime?.id;
+
+const IDENTITY_PERMISSION: chrome.permissions.Permissions = { permissions: ['identity'] };
+
+// Whether the optional "identity" permission is currently granted.
+export const hasIdentityPermission = (): Promise<boolean> => {
+  if (!isExtension() || !chrome.permissions) return Promise.resolve(false);
+
+  return new Promise<boolean>(resolve => {
+    chrome.permissions.contains(IDENTITY_PERMISSION, granted => resolve(!!granted && !chrome.runtime.lastError));
+  });
+};
+
+// Request the optional "identity" permission
+const requestIdentityPermission = (): Promise<boolean> =>
+  new Promise<boolean>(resolve => {
+    chrome.permissions.request(IDENTITY_PERMISSION, granted => resolve(!!granted && !chrome.runtime.lastError));
+  });
+
+// Drop the optional "identity" permission so it stays dynamic — after the user
+// disconnects Drive, the extension no longer holds identity access
+export const removeIdentityPermission = (): Promise<void> =>
+  new Promise<void>(resolve => {
+    if (!isExtension() || !chrome.permissions) {
+      resolve();
+      return;
+    }
+    chrome.permissions.remove(IDENTITY_PERMISSION, () => resolve());
+  });
 
 // EXTENSION PATH — chrome.identity
 // Chrome manages the OAuth flow automatically using the client_id declared in
 // manifest.json under "oauth2". No popup is shown for non-interactive calls if
 // the user has already granted consent
-const getExtensionToken = (interactive: boolean): Promise<string> =>
-  new Promise<string>((resolve, reject) => {
+const getExtensionToken = async (interactive: boolean): Promise<string> => {
+  // "identity" is optional, so make sure it's granted before touching the API.
+  // For interactive calls we ask for it (user gesture); otherwise we require it
+  // to already be present and fail fast so callers can reset to a disconnected
+  // state without crashing on an undefined chrome.identity namespace.
+  const granted = (await hasIdentityPermission()) || (interactive && (await requestIdentityPermission()));
+
+  if (!granted || !chrome.identity) {
+    throw new Error('Google Drive access was not granted.');
+  }
+
+  return new Promise<string>((resolve, reject) => {
     chrome.identity.getAuthToken({ interactive }, result => {
       if (chrome.runtime.lastError) {
         reject(new Error(chrome.runtime.lastError.message ?? 'Failed to get auth token'));
@@ -57,6 +95,7 @@ const getExtensionToken = (interactive: boolean): Promise<string> =>
       resolve(token);
     });
   });
+};
 
 const revokeExtensionToken = (token: string): Promise<void> =>
   new Promise<void>(resolve => {
