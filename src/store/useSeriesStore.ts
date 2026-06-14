@@ -286,16 +286,14 @@ export const useSeriesStore = create<SeriesStore & SeriesActions>()(
             set(
               draft => {
                 if (draft.favoritesSeriesMap[seriesId]) {
-                  draft.favoritesSeriesMap[seriesId].isFavorite = draft.favoritesSeriesMap[seriesId].isFavorite
-                    ? false
-                    : true;
+                  const entry = draft.favoritesSeriesMap[seriesId];
+                  entry.isFavorite = !entry.isFavorite;
+                  entry.timestamp = getISODateNow();
                 } else {
                   draft.favoritesSeriesMap[seriesId] = {
                     isFavorite: true,
-                    timestamp: null,
+                    timestamp: getISODateNow(),
                   };
-
-                  draft.favoritesSeriesMap[seriesId].timestamp = getISODateNow();
                 }
               },
               false,
