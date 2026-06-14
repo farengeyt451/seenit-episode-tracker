@@ -37,7 +37,7 @@ export const SYNC_META_STORAGE_NAME = 'sync-meta';
 
 export const DRIVE_FILE_NAME = 'seenit-data.json';
 
-export const SYNC_DEBOUNCE_MS = 2000;
+export const SYNC_DEBOUNCE_MS = 1200;
 
 // Tombstones older than this are dropped during merge. 60 days is well beyond
 // any plausible offline-device window while keeping the table bounded.
