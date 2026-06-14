@@ -285,8 +285,9 @@ export const useSeriesStore = create<SeriesStore & SeriesActions>()(
           toggleFavorites: (seriesId: number) => {
             set(
               draft => {
-                if (draft.favoritesSeriesMap[seriesId]) {
-                  const entry = draft.favoritesSeriesMap[seriesId];
+                const entry = draft.favoritesSeriesMap[seriesId];
+
+                if (entry) {
                   entry.isFavorite = !entry.isFavorite;
                   entry.timestamp = getISODateNow();
                 } else {

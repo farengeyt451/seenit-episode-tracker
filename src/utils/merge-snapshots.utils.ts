@@ -163,7 +163,7 @@ const lastActivityAt = (
     if (!series?.seasons) return;
     for (const season of Object.values(series.seasons)) {
       for (const ep of Object.values(season.episodes)) {
-        if (ep.timestamp && (max === null || ep.timestamp > max)) {
+        if (ep?.timestamp && (max === null || ep.timestamp > max)) {
           max = ep.timestamp;
         }
       }
