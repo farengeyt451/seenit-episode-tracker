@@ -49,3 +49,7 @@ export const TOMBSTONE_TTL_MS = 60 * 24 * 60 * 60 * 1000; // 60 days
 export const DEVICE_ID_STORAGE_NAME = 'seenit-device-id';
 
 export const SYNC_PHASE_DELAY_MS = 250;
+
+export const CURRENT_DRIVE_SCHEMA_VERSION = 1;
+
+export const SERIES_STORE_VERSION = 3;

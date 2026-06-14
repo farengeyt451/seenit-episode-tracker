@@ -1,15 +1,19 @@
-import { SERIES_STORAGE_NAME } from '@/constants';
+import { SERIES_STORAGE_NAME, SERIES_STORE_VERSION } from '@/constants';
 import { ToggleAllWatchedMode } from '@/enums';
-import { Series, TrackingSeriesData } from '@/types';
+import { FavoritesSeries, Series, TrackingSeriesData } from '@/types';
 import { Nullable } from '@/utility-types';
-import { createTrackingSeriesData, fetchSeriesMetadata, getDateInISO, updateTrackingSeriesData } from '@/utils';
+import {
+  createTrackingSeriesData,
+  fetchSeriesMetadata,
+  getISODateNow,
+  migrateSeriesState,
+  updateTrackingSeriesData,
+} from '@/utils';
 import { chromeStorage } from '@/utils/storage.utils';
 import { SeriesTombstones } from '@/zod-schemas';
 import { create } from 'zustand';
 import { createJSONStorage, devtools, persist } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
-
-const SERIES_STORE_VERSION = 2;
 
 enum SeriesActionTypes {
   InitLoading = 'initLoading',
@@ -41,7 +45,7 @@ type SeriesStore = {
   seriesData: Nullable<Series[]>;
   trackingSeriesMap: Record<string, boolean>;
   isRewardShownMap: Record<string, boolean>;
-  favoritesSeriesMap: Record<string, boolean>;
+  favoritesSeriesMap: Record<string, FavoritesSeries>;
   trackingSeriesData: Nullable<TrackingSeriesData>;
   // Soft-delete markers for series that the user removed. Synced via Drive
   // so deletions propagate across devices. See docs/sync-merge-strategy.md.
@@ -207,7 +211,7 @@ export const useSeriesStore = create<SeriesStore & SeriesActions>()(
                 // Tombstone the removal so the next sync propagates it to other devices.
                 // Merge logic uses this to distinguish "intentionally deleted" from
                 // "never tracked here". See docs/sync-merge-strategy.md.
-                draft.seriesTombstones[String(seriesId)] = { deletedAt: getDateInISO() };
+                draft.seriesTombstones[String(seriesId)] = { deletedAt: getISODateNow() };
 
                 draft.activeSeriesId = draft.seriesData.length > 0 ? draft.seriesData[0].id : null;
               },
@@ -242,7 +246,7 @@ export const useSeriesStore = create<SeriesStore & SeriesActions>()(
                 if (!episode) return;
 
                 episode.isWatched = isWatched;
-                episode.timestamp = isWatched ? getDateInISO() : null;
+                episode.timestamp = isWatched ? getISODateNow() : null;
               },
               false,
               SeriesActionTypes.ToggleWatched,
@@ -262,7 +266,7 @@ export const useSeriesStore = create<SeriesStore & SeriesActions>()(
                       if (episode.isWatched) return;
 
                       episode.isWatched = true;
-                      episode.timestamp = getDateInISO();
+                      episode.timestamp = getISODateNow();
                       return;
                     }
 
@@ -281,7 +285,18 @@ export const useSeriesStore = create<SeriesStore & SeriesActions>()(
           toggleFavorites: (seriesId: number) => {
             set(
               draft => {
-                draft.favoritesSeriesMap[seriesId] = draft.favoritesSeriesMap[seriesId] ? false : true;
+                if (draft.favoritesSeriesMap[seriesId]) {
+                  draft.favoritesSeriesMap[seriesId].isFavorite = draft.favoritesSeriesMap[seriesId].isFavorite
+                    ? false
+                    : true;
+                } else {
+                  draft.favoritesSeriesMap[seriesId] = {
+                    isFavorite: true,
+                    timestamp: null,
+                  };
+
+                  draft.favoritesSeriesMap[seriesId].timestamp = getISODateNow();
+                }
               },
               false,
               `${SeriesActionTypes.ToggleFavorites}:${seriesId}`,
@@ -311,13 +326,7 @@ export const useSeriesStore = create<SeriesStore & SeriesActions>()(
             isRewardShownMap: state.isRewardShownMap,
             seriesTombstones: state.seriesTombstones,
           }),
-          migrate: persisted => {
-            const obj = (persisted ?? {}) as Partial<SeriesStore>;
-            if (!obj.seriesTombstones) {
-              obj.seriesTombstones = {};
-            }
-            return obj as SeriesStore & SeriesActions;
-          },
+          migrate: migrateSeriesState,
         },
       ),
     ),

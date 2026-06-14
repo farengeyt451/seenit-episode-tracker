@@ -1,24 +1,29 @@
-import { DRIVE_FILE_NAME, SERIES_STORAGE_NAME, SYNC_META_STORAGE_NAME, SYNC_PHASE_DELAY_MS } from '@/constants';
+import {
+  CURRENT_DRIVE_SCHEMA_VERSION,
+  DRIVE_FILE_NAME,
+  SERIES_STORAGE_NAME,
+  SERIES_STORE_VERSION,
+  SYNC_META_STORAGE_NAME,
+  SYNC_PHASE_DELAY_MS,
+} from '@/constants';
 import { SyncPhase, SyncStatus } from '@/enums';
 import { Nullable } from '@/utility-types';
-import { getOrCreateDeviceId } from '@/utils';
-import { getGoogleToken, removeIdentityPermission, revokeGoogleToken } from '@/utils/google-auth.utils';
 import {
+  chromeStorage,
   createDriveFile,
   findDriveFile,
   getDriveFileMeta,
+  getGoogleToken,
+  getISODateNow,
+  getOrCreateDeviceId,
+  mergeStates,
+  migrateSeriesState,
   readDriveFile,
+  removeIdentityPermission,
+  revokeGoogleToken,
   updateDriveFile,
-} from '@/utils/google-drive.utils';
-import { mergeStates } from '@/utils/merge-snapshots.utils';
-import { chromeStorage } from '@/utils/storage.utils';
-import {
-  CURRENT_DRIVE_SCHEMA_VERSION,
-  DriveSnapshot,
-  DriveSnapshotSchema,
-  PersistedSeriesStore,
-  PersistedSeriesStoreSchema,
-} from '@/zod-schemas';
+} from '@/utils';
+import { DriveSnapshot, DriveSnapshotSchema, PersistedSeriesStore, PersistedSeriesStoreSchema } from '@/zod-schemas';
 import { create } from 'zustand';
 import { createJSONStorage, devtools, persist } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
@@ -109,12 +114,25 @@ const emptyPersistedState = (): PersistedSeriesStore => ({
   seriesTombstones: {},
 });
 
+const migrateCloudSnapshot = (raw: unknown): unknown => {
+  if (!raw || typeof raw !== 'object') return raw;
+
+  const snapshot = raw as Record<string, unknown>;
+  const version = typeof snapshot.version === 'number' ? snapshot.version : 0;
+
+  return {
+    ...snapshot,
+    version: Math.max(version, SERIES_STORE_VERSION),
+    state: migrateSeriesState(snapshot.state, version),
+  };
+};
+
 // Build a Drive-ready snapshot from a state object
 const buildDriveSnapshot = (state: PersistedSeriesStore, version: number, deviceId: string): DriveSnapshot => ({
   cloudSchemaVersion: CURRENT_DRIVE_SCHEMA_VERSION,
   version,
   state,
-  syncedAt: new Date().toISOString(),
+  syncedAt: getISODateNow(),
   lastWriter: deviceId,
 });
 
@@ -227,7 +245,9 @@ const runSyncCycle = async ({
 
     try {
       const cloudRaw = await readDriveFile(token, resolvedFileId);
-      const parsed = DriveSnapshotSchema.safeParse(cloudRaw);
+      // Migrate the cloud payload up to the current version before the strict
+      // parse so legacy snapshots
+      const parsed = DriveSnapshotSchema.safeParse(migrateCloudSnapshot(cloudRaw));
 
       if (parsed.success) cloudParsed = parsed.data;
     } catch (err) {

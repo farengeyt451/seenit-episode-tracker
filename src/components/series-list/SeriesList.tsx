@@ -39,7 +39,7 @@ export const SeriesList: FC<{
           series={series}
           trackingData={trackingSeriesData?.[series.id]}
           isActive={series.id === activeSeriesId}
-          isFavorite={favoritesSeriesMap[series.id]}
+          isFavorite={favoritesSeriesMap[series.id]?.isFavorite}
           itemClick={handleSeriesClick}
         />
       ))}

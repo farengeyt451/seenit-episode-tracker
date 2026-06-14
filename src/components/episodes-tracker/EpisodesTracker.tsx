@@ -194,7 +194,7 @@ export const EpisodesTracker: FC = (): JSX.Element => {
                   key={activeSeriesId}
                   title={activeTrackingSeries.name}
                   status={activeTrackingSeries.status}
-                  isFavorite={favoritesSeriesMap[activeSeriesId]}
+                  isFavorite={favoritesSeriesMap[activeSeriesId]?.isFavorite}
                   toggleFavorites={handleToggleFavorites}
                   refreshSeriesData={handleRefreshSeriesData}
                   remove={handleSeriesRemove}

@@ -12,7 +12,7 @@ export const getYear = (date: Nullable<string>): Nullable<number> => {
 /**
  * Returns the current date/time as an ISO string
  */
-export const getDateInISO = (): string => {
+export const getISODateNow = (): string => {
   return DateTime.now().toUTC().toISO();
 };
 

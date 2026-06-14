@@ -144,3 +144,8 @@ export const isActivateLicenseSuccess = (resp: ActivateLicenseResponse): resp is
 
 export const isActivateLicenseError = (resp: ActivateLicenseResponse): resp is { error: string } =>
   (resp as { error: string }).error !== undefined;
+
+export interface FavoritesSeries {
+  isFavorite: boolean;
+  timestamp: Nullable<string>;
+}

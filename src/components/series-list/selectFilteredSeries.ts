@@ -1,11 +1,11 @@
-import { Series } from '@/types';
+import { FavoritesSeries, Series } from '@/types';
 import { Nullable } from '@/utility-types';
 
 export function selectFilteredSeries(
   seriesData: Nullable<Series[]>,
   filterQuery: Nullable<string>,
   showOnlyFavorites: boolean,
-  favoritesSeriesMap: Record<number, boolean>,
+  favoritesSeriesMap: Record<number, FavoritesSeries>,
 ): Series[] {
   if (!seriesData?.length) return [];
 
@@ -13,7 +13,7 @@ export function selectFilteredSeries(
   const hasQuery = !!query;
 
   return seriesData.filter(series => {
-    if (showOnlyFavorites && !favoritesSeriesMap[series.id]) return false;
+    if (showOnlyFavorites && !favoritesSeriesMap[series.id]?.isFavorite) return false;
 
     if (hasQuery) {
       const nameMatches = series.name.toLowerCase().includes(query);

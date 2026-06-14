@@ -1,14 +1,52 @@
 import { TOMBSTONE_TTL_MS } from '@/constants';
+import { FavoritesSeries } from '@/types';
+import { Nullable } from '@/utility-types';
 import { PersistedSeriesStore, SeriesTombstones } from '@/zod-schemas';
-import { Nullable } from 'src/utility-types';
+import { DateTime } from 'luxon';
 
 // Union rule: for any key present in either map, true wins over false / absent.
 // Used for trackingSeriesMap, favoritesSeriesMap, and isRewardShownMap
 const mergeBooleanMaps = (local: Record<string, boolean>, cloud: Record<string, boolean>): Record<string, boolean> => {
   const result: Record<string, boolean> = { ...local };
+
   for (const [key, val] of Object.entries(cloud)) {
     result[key] = val || result[key] || false;
   }
+  return result;
+};
+
+const mergeFavoritesSeriesMap = (
+  local: PersistedSeriesStore['favoritesSeriesMap'],
+  cloud: PersistedSeriesStore['favoritesSeriesMap'],
+): PersistedSeriesStore['favoritesSeriesMap'] => {
+  const result: Record<string, FavoritesSeries> = { ...local };
+
+  for (const [seriesId, cloudFavorite] of Object.entries(cloud)) {
+    const localFavorite = result[seriesId];
+
+    if (!localFavorite) {
+      result[seriesId] = cloudFavorite;
+      continue;
+    }
+
+    if (cloudFavorite.timestamp && localFavorite.timestamp) {
+      if (DateTime.fromISO(cloudFavorite.timestamp) > DateTime.fromISO(localFavorite.timestamp)) {
+        result[seriesId] = cloudFavorite;
+      }
+      continue;
+    }
+
+    if (cloudFavorite.timestamp || localFavorite.timestamp) {
+      result[seriesId] = cloudFavorite.timestamp ? cloudFavorite : localFavorite;
+      continue;
+    }
+
+    result[seriesId] = {
+      isFavorite: cloudFavorite.isFavorite || localFavorite.isFavorite,
+      timestamp: null,
+    };
+  }
+
   return result;
 };
 
@@ -230,11 +268,11 @@ const setActiveSeriesId = (local: PersistedSeriesStore, cloud: PersistedSeriesSt
   if (local.activeSeriesId) {
     activeSeriesId = local.activeSeriesId;
   } else if (local.seriesData?.length) {
-    activeSeriesId = local.seriesData.at(0)?.id ?? null;
+    activeSeriesId = local.seriesData[0]?.id ?? null;
   } else if (cloud.activeSeriesId) {
     activeSeriesId = cloud.activeSeriesId;
   } else if (cloud.seriesData?.length) {
-    activeSeriesId = cloud.seriesData.at(0)?.id ?? null;
+    activeSeriesId = cloud.seriesData[0]?.id ?? null;
   }
 
   return activeSeriesId;
@@ -254,7 +292,7 @@ export const mergeStates = (local: PersistedSeriesStore, cloud: PersistedSeriesS
     activeSeriesId: setActiveSeriesId(local, cloud),
     seriesData: mergeSeriesData(local.seriesData, cloud.seriesData),
     trackingSeriesMap: mergeBooleanMaps(local.trackingSeriesMap, cloud.trackingSeriesMap),
-    favoritesSeriesMap: mergeBooleanMaps(local.favoritesSeriesMap, cloud.favoritesSeriesMap),
+    favoritesSeriesMap: mergeFavoritesSeriesMap(local.favoritesSeriesMap, cloud.favoritesSeriesMap),
     isRewardShownMap: mergeBooleanMaps(local.isRewardShownMap, cloud.isRewardShownMap),
     trackingSeriesData: mergeTrackingData(local.trackingSeriesData, cloud.trackingSeriesData),
     seriesTombstones: tombstones,

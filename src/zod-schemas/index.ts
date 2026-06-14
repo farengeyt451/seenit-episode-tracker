@@ -185,7 +185,13 @@ export const PersistedSeriesStoreSchema = z.object({
   seriesData: z.array(SeriesSchema).nullable(),
   activeSeriesId: z.number().nullable(),
   trackingSeriesMap: z.record(z.string(), z.boolean()),
-  favoritesSeriesMap: z.record(z.string(), z.boolean()),
+  favoritesSeriesMap: z.record(
+    z.string(),
+    z.object({
+      isFavorite: z.boolean(),
+      timestamp: z.string().nullable(),
+    }),
+  ),
   trackingSeriesData: TrackingSeriesDataSchema.nullable(),
   isRewardShownMap: z.record(z.string(), z.boolean()),
   seriesTombstones: SeriesTombstonesSchema.optional(),
@@ -201,8 +207,6 @@ export const DriveSnapshotSchema = StorageSchema.extend({
   cloudSchemaVersion: z.number().optional(),
   lastWriter: z.string().nullable().optional(),
 });
-
-export const CURRENT_DRIVE_SCHEMA_VERSION = 1;
 
 export type SeriesTombstone = z.infer<typeof SeriesTombstoneSchema>;
 export type SeriesTombstones = z.infer<typeof SeriesTombstonesSchema>;

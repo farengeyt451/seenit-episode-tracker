@@ -4,5 +4,8 @@ export * from './device.utils';
 export * from './fetch.utils';
 export * from './google-auth.utils';
 export * from './google-drive.utils';
+export * from './merge-snapshots.utils';
+export * from './migrate-series-state.utils';
 export * from './series.utils';
+export * from './storage.utils';
 export * from './time.utils';
