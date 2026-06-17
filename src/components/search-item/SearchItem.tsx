@@ -57,7 +57,7 @@ export const SearchItem: FC<SearchItemProps> = ({
       className={clsx(
         'group relative flex h-15 cursor-pointer overflow-hidden rounded-full',
         'transition-colors duration-150 ease-in',
-        'bg-gray-900/50 not-first:mt-4 hover:bg-gray-900/90',
+        'bg-gray-900/50 hover:bg-gray-900/90',
         'light:bg-slate-100 light:hover:bg-slate-300',
         isTracking &&
           'pointer-events-none relative border-green-500/10 bg-linear-to-r from-green-700/50 via-green-500/20 to-gray-900/95 shadow-inner contrast-[0.9] grayscale-25',

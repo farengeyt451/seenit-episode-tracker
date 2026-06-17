@@ -163,7 +163,7 @@ const lastActivityAt = (
     if (!series?.seasons) return;
     for (const season of Object.values(series.seasons)) {
       for (const ep of Object.values(season.episodes)) {
-        if (ep?.timestamp && (max === null || ep.timestamp > max)) {
+        if (ep.timestamp && (max === null || ep.timestamp > max)) {
           max = ep.timestamp;
         }
       }
@@ -247,6 +247,9 @@ const applyTombstones = (
     favoritesSeriesMap: filterMap(state.favoritesSeriesMap, deadIds),
     isRewardShownMap: filterMap(state.isRewardShownMap, deadIds),
     trackingSeriesData: state.trackingSeriesData ? filterMap(state.trackingSeriesData, deadIds) : null,
+    seriesOrder: state.seriesOrder
+      ? { ...state.seriesOrder, ids: state.seriesOrder.ids.filter(id => !numericDeadIds.has(id)) }
+      : state.seriesOrder,
     // If the user's currently-active series was deleted on another device,
     // unset it; the EpisodesTracker will show the empty state.
     activeSeriesId:
@@ -260,6 +263,53 @@ const filterMap = <T>(map: Record<string, T>, deadIds: Set<string>): Record<stri
     if (!deadIds.has(k)) out[k] = v;
   }
   return out;
+};
+
+// Last-writer-wins on updatedAt. A real reorder sets a timestamp, so it beats a
+// migrated/default null timestamp; otherwise the later timestamp wins; ties and
+// the all-null case prefer local.
+const pickNewerOrder = (
+  local: NonNullable<PersistedSeriesStore['seriesOrder']>,
+  cloud: NonNullable<PersistedSeriesStore['seriesOrder']>,
+): NonNullable<PersistedSeriesStore['seriesOrder']> => {
+  if (local.updatedAt && cloud.updatedAt) {
+    return DateTime.fromISO(cloud.updatedAt) > DateTime.fromISO(local.updatedAt) ? cloud : local;
+  }
+
+  if (cloud.updatedAt && !local.updatedAt) return cloud;
+
+  return local;
+};
+
+// Resolve the ordering by LWW, then reconcile against the merged set of series:
+// drop ids that no longer exist and append any merged series missing from the
+// chosen order (so series added on the other device still appear).
+const mergeSeriesOrder = (
+  local: PersistedSeriesStore['seriesOrder'],
+  cloud: PersistedSeriesStore['seriesOrder'],
+  mergedSeriesIds: number[],
+): PersistedSeriesStore['seriesOrder'] => {
+  const chosen = pickNewerOrder(local ?? { ids: [], updatedAt: null }, cloud ?? { ids: [], updatedAt: null });
+
+  const present = new Set(mergedSeriesIds);
+  const seen = new Set<number>();
+  const ids: number[] = [];
+
+  for (const id of chosen.ids) {
+    if (present.has(id) && !seen.has(id)) {
+      ids.push(id);
+      seen.add(id);
+    }
+  }
+
+  for (const id of mergedSeriesIds) {
+    if (!seen.has(id)) {
+      ids.push(id);
+      seen.add(id);
+    }
+  }
+
+  return { ids, updatedAt: chosen.updatedAt };
 };
 
 const setActiveSeriesId = (local: PersistedSeriesStore, cloud: PersistedSeriesStore): Nullable<number> => {
@@ -288,13 +338,16 @@ export const mergeStates = (local: PersistedSeriesStore, cloud: PersistedSeriesS
     cloud.trackingSeriesData,
   );
 
+  const mergedSeriesData = mergeSeriesData(local.seriesData, cloud.seriesData);
+
   const merged: PersistedSeriesStore = {
     activeSeriesId: setActiveSeriesId(local, cloud),
-    seriesData: mergeSeriesData(local.seriesData, cloud.seriesData),
+    seriesData: mergedSeriesData,
     trackingSeriesMap: mergeBooleanMaps(local.trackingSeriesMap, cloud.trackingSeriesMap),
     favoritesSeriesMap: mergeFavoritesSeriesMap(local.favoritesSeriesMap, cloud.favoritesSeriesMap),
     isRewardShownMap: mergeBooleanMaps(local.isRewardShownMap, cloud.isRewardShownMap),
     trackingSeriesData: mergeTrackingData(local.trackingSeriesData, cloud.trackingSeriesData),
+    seriesOrder: mergeSeriesOrder(local.seriesOrder, cloud.seriesOrder, mergedSeriesData?.map(s => s.id) ?? []),
     seriesTombstones: tombstones,
   };
 

@@ -149,3 +149,8 @@ export interface FavoritesSeries {
   isFavorite: boolean;
   timestamp: Nullable<string>;
 }
+
+export interface SeriesOrder {
+  ids: number[];
+  updatedAt: Nullable<string>;
+}

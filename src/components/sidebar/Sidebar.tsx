@@ -1,5 +1,4 @@
-import { SearchResults, SeriesList } from '@/components';
-import { Filter } from '@/components/filter';
+import { Filter, SearchResults, SeriesList } from '@/components';
 import { Search } from '@/components/search';
 import { SidebarModeSwitch } from '@/components/sidebar-mode-switch';
 import { ErrorTVIcon, InfoSearchBlock, LockWrapper, SeenItButton } from '@/components/ui';
@@ -112,7 +111,7 @@ export const Sidebar: FC = (): JSX.Element => {
         data-tag="sidebar__container"
         className={clsx(
           'w-sidebar-width absolute top-0 left-0 h-full',
-          'scrollbar-gutter-both-edges z-20 overflow-x-hidden overflow-y-auto [scrollbar-width:thin]',
+          'scrollbar-gutter-both-edges z-20 scrollbar-thin overflow-x-hidden overflow-y-auto',
           'transition-transform duration-200 ease-out',
           'light:bg-slate-200 light:border-r light:border-slate-200 bg-gray-800',
 
@@ -128,7 +127,7 @@ export const Sidebar: FC = (): JSX.Element => {
             'h-height-header sticky top-0',
             'flex items-center justify-between',
             'z-30',
-            'light:bg-slate-200 bg-gray-800 p-3',
+            'light:bg-slate-200 bg-gray-800 py-3 pr-1.5 pl-3',
             'light:after:bg-slate-500/60 after:w-sidebar-width after:absolute after:bottom-0 after:-left-2.5 after:z-30 after:h-0.5 after:bg-gray-700',
           )}
         >
@@ -282,7 +281,7 @@ export const Sidebar: FC = (): JSX.Element => {
         ) : (
           <div
             data-tag="sidebar__series"
-            className="mt-4 px-2 pb-3"
+            className="px-2 pb-3"
           >
             {showSearchMode ? (
               <SearchResults itemClick={handleSearchItemClick} />

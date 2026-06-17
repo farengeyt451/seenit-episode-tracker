@@ -181,6 +181,11 @@ const SeriesTombstoneSchema = z.object({
 
 export const SeriesTombstonesSchema = z.record(z.string(), SeriesTombstoneSchema);
 
+export const SeriesOrderSchema = z.object({
+  ids: z.array(z.number()),
+  updatedAt: z.string().nullable(),
+});
+
 export const PersistedSeriesStoreSchema = z.object({
   seriesData: z.array(SeriesSchema).nullable(),
   activeSeriesId: z.number().nullable(),
@@ -194,6 +199,7 @@ export const PersistedSeriesStoreSchema = z.object({
   ),
   trackingSeriesData: TrackingSeriesDataSchema.nullable(),
   isRewardShownMap: z.record(z.string(), z.boolean()),
+  seriesOrder: SeriesOrderSchema.optional(),
   seriesTombstones: SeriesTombstonesSchema.optional(),
 });
 

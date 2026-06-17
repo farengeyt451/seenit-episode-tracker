@@ -13,7 +13,10 @@ export const SearchList: FC<SearchListProps> = ({ series, searchItemClick }): JS
   const trackingSeriesMap = useSeriesStore(useShallow(state => state.trackingSeriesMap));
 
   return (
-    <div data-tag="search-list">
+    <div
+      data-tag="search-list"
+      className="mt-4 flex flex-col gap-4"
+    >
       {series.map(({ show }) => (
         <SearchItem
           key={show.id}

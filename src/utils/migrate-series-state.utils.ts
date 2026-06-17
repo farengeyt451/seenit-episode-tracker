@@ -41,5 +41,17 @@ export const migrateSeriesState = (state: unknown, version: number): MutableStat
     data.favoritesSeriesMap = migratedFavorites;
   }
 
+  // -> v4: introduce explicit seriesOrder, seeded from the existing seriesData
+  // array order. updatedAt stays null so any real reorder (which sets a
+  // timestamp) wins during last-writer-wins merge.
+  if (version < 4 && !data.seriesOrder) {
+    const series = Array.isArray(data.seriesData) ? data.seriesData : [];
+
+    data.seriesOrder = {
+      ids: series.map(s => s.id),
+      updatedAt: null,
+    };
+  }
+
   return data;
 };

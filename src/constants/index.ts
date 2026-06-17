@@ -52,4 +52,4 @@ export const SYNC_PHASE_DELAY_MS = 120;
 
 export const CURRENT_DRIVE_SCHEMA_VERSION = 1;
 
-export const SERIES_STORE_VERSION = 3;
+export const SERIES_STORE_VERSION = 4;

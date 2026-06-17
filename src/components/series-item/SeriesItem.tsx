@@ -11,6 +11,7 @@ interface SeriesItemProps {
   trackingData: TrackingSeries | undefined;
   isActive: boolean;
   isFavorite: boolean;
+  isDragging?: boolean;
   itemClick: (id: number) => void;
 }
 
@@ -19,6 +20,7 @@ export const SeriesItem: FC<SeriesItemProps> = ({
   trackingData,
   isActive,
   isFavorite,
+  isDragging = false,
   itemClick,
 }): JSX.Element => {
   const isEnded = status === SeriesStatus.Ended;
@@ -51,11 +53,13 @@ export const SeriesItem: FC<SeriesItemProps> = ({
       data-tag="series-item"
       className={clsx(
         'group relative flex h-15 w-full overflow-hidden rounded-full',
-        'transition-colors duration-150 ease-in',
-        'light:bg-white light:shadow-sm light:border light:border-slate-200 bg-gray-900/50 not-first:mt-4',
+        'transition-all duration-150 ease-in',
+        'light:bg-white light:shadow-sm light:border light:border-slate-200 bg-gray-900/50',
+        'will-change-transform',
         isActive
           ? 'light:from-blue-200/90 light:via-sky-200/80 light:to-slate-50/70 light:border-sky-200 cursor-default bg-linear-to-r from-purple-900/60 via-violet-800/40 to-blue-900/20'
           : 'light:hover:bg-slate-300 cursor-pointer hover:bg-gray-900/90',
+        isDragging && 'scale-105 bg-gray-900/90',
       )}
       onClick={() => itemClick(id)}
     >
@@ -89,7 +93,7 @@ export const SeriesItem: FC<SeriesItemProps> = ({
               <h3
                 data-tag="series-item__caption"
                 title={name}
-                className="inline-block w-full max-w-46 items-center truncate align-middle"
+                className="inline-block w-full max-w-43 items-center truncate align-middle"
               >
                 {name}
               </h3>
@@ -115,7 +119,10 @@ export const SeriesItem: FC<SeriesItemProps> = ({
                     You've seen it all <SparklesIcon className="light:text-amber-700 size-4 text-amber-400" />
                   </span>
                 ) : (
-                  `${episodesDisplayData.watched}/${episodesDisplayData.total} episodes watched`
+                  <>
+                    <span className="font-bold">{`${episodesDisplayData.watched}/${episodesDisplayData.total}`}</span>{' '}
+                    episodes watched
+                  </>
                 )}
               </p>
             )}

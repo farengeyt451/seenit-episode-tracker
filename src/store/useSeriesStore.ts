@@ -1,6 +1,6 @@
 import { SERIES_STORAGE_NAME, SERIES_STORE_VERSION } from '@/constants';
 import { ToggleAllWatchedMode } from '@/enums';
-import { FavoritesSeries, Series, TrackingSeriesData } from '@/types';
+import { FavoritesSeries, Series, SeriesOrder, TrackingSeriesData } from '@/types';
 import { Nullable } from '@/utility-types';
 import {
   createTrackingSeriesData,
@@ -26,6 +26,7 @@ enum SeriesActionTypes {
   SetIsRewardShown = 'setIsRewardShown',
   Remove = 'remove',
   SetActiveSeriesId = 'setActiveSeriesId',
+  Reorder = 'reorder',
   ToggleFavorites = 'toggleFavorites',
   RefreshLoading = 'refreshLoading',
   RefreshSuccess = 'refreshSuccess',
@@ -47,8 +48,7 @@ type SeriesStore = {
   isRewardShownMap: Record<string, boolean>;
   favoritesSeriesMap: Record<string, FavoritesSeries>;
   trackingSeriesData: Nullable<TrackingSeriesData>;
-  // Soft-delete markers for series that the user removed. Synced via Drive
-  // so deletions propagate across devices. See docs/sync-merge-strategy.md.
+  seriesOrder: SeriesOrder;
   seriesTombstones: SeriesTombstones;
   isLoading: boolean;
   isRefreshing: boolean;
@@ -65,6 +65,7 @@ type SeriesActions = {
   setIsRewardShown: (seriesId: number) => void;
   setActiveSeriesId: (seriesId: number) => void;
   toggleFavorites: (seriesId: number) => void;
+  reorderSeries: (orderedIds: number[]) => void;
 };
 
 const initialState: SeriesStore = {
@@ -74,6 +75,7 @@ const initialState: SeriesStore = {
   isRewardShownMap: {},
   favoritesSeriesMap: {},
   trackingSeriesData: {},
+  seriesOrder: { ids: [], updatedAt: null },
   seriesTombstones: {},
   isLoading: false,
   isRefreshing: false,
@@ -110,6 +112,11 @@ export const useSeriesStore = create<SeriesStore & SeriesActions>()(
                     }
 
                     draft.trackingSeriesData[newSeries.id] = createTrackingSeriesData(newSeries);
+
+                    if (!draft.seriesOrder.ids.includes(newSeries.id)) {
+                      draft.seriesOrder.ids.push(newSeries.id);
+                      draft.seriesOrder.updatedAt = getISODateNow();
+                    }
 
                     // Re-adding a previously deleted series clears its tombstone
                     // so the deletion doesn't propagate back from another device.
@@ -208,6 +215,13 @@ export const useSeriesStore = create<SeriesStore & SeriesActions>()(
                 delete draft.isRewardShownMap[seriesId];
                 delete draft.favoritesSeriesMap[seriesId];
 
+                const orderIndex = draft.seriesOrder.ids.indexOf(seriesId);
+
+                if (orderIndex > -1) {
+                  draft.seriesOrder.ids.splice(orderIndex, 1);
+                  draft.seriesOrder.updatedAt = getISODateNow();
+                }
+
                 // Tombstone the removal so the next sync propagates it to other devices.
                 // Merge logic uses this to distinguish "intentionally deleted" from
                 // "never tracked here". See docs/sync-merge-strategy.md.
@@ -226,6 +240,15 @@ export const useSeriesStore = create<SeriesStore & SeriesActions>()(
               },
               false,
               SeriesActionTypes.SetActiveSeriesId,
+            );
+          },
+          reorderSeries: orderedIds => {
+            set(
+              draft => {
+                draft.seriesOrder = { ids: orderedIds, updatedAt: getISODateNow() };
+              },
+              false,
+              SeriesActionTypes.Reorder,
             );
           },
           clearErrorState: () =>
@@ -285,16 +308,17 @@ export const useSeriesStore = create<SeriesStore & SeriesActions>()(
           toggleFavorites: (seriesId: number) => {
             set(
               draft => {
-                const entry = draft.favoritesSeriesMap[seriesId];
-
-                if (entry) {
-                  entry.isFavorite = !entry.isFavorite;
-                  entry.timestamp = getISODateNow();
+                if (draft.favoritesSeriesMap[seriesId]) {
+                  draft.favoritesSeriesMap[seriesId].isFavorite = draft.favoritesSeriesMap[seriesId].isFavorite
+                    ? false
+                    : true;
                 } else {
                   draft.favoritesSeriesMap[seriesId] = {
                     isFavorite: true,
-                    timestamp: getISODateNow(),
+                    timestamp: null,
                   };
+
+                  draft.favoritesSeriesMap[seriesId].timestamp = getISODateNow();
                 }
               },
               false,
@@ -323,6 +347,7 @@ export const useSeriesStore = create<SeriesStore & SeriesActions>()(
             favoritesSeriesMap: state.favoritesSeriesMap,
             trackingSeriesData: state.trackingSeriesData,
             isRewardShownMap: state.isRewardShownMap,
+            seriesOrder: state.seriesOrder,
             seriesTombstones: state.seriesTombstones,
           }),
           migrate: migrateSeriesState,
