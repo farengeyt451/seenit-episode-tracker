@@ -416,6 +416,7 @@ export const SettingsDialog: FC = (): JSX.Element => {
                             data-tag="settings__cloud-sync-disconnect"
                             colorType="secondary"
                             size="small"
+                            disabled={syncStatus === SyncStatus.Syncing}
                             onClick={disconnect}
                           >
                             Disconnect
