@@ -1,0 +1,1 @@
+export { FavoritePattern } from './FavoritePattern';

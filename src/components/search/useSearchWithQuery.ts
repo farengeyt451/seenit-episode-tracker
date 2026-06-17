@@ -1,10 +1,9 @@
 import { DEFAULT_SEARCH_THROTTLE, SEARCH_ENDPOINT } from '@/constants';
 import { SearchResponse } from '@/types';
+import { Nullable } from '@/utility-types';
 import { useThrottle } from '@uidotdev/usehooks';
 import axios from 'axios';
 import { useCallback, useEffect, useReducer, useRef } from 'react';
-
-import { Nullable } from '@/utility-types';
 
 interface SearchState {
   series: Nullable<SearchResponse[]>;

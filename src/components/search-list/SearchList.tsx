@@ -1,4 +1,4 @@
-import { SearchItem } from '@/components/search-item';
+import { SearchItem } from '@/components';
 import { useSeriesStore } from '@/store';
 import { SearchResponse } from '@/types';
 import { FC, JSX } from 'react';

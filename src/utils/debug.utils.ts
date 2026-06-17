@@ -1,10 +1,6 @@
 import { SERIES_STORAGE_NAME } from '@/constants';
 import { useSyncStore } from '@/store';
-import { getOrCreateDeviceId } from '@/utils/device.utils';
-import { getGoogleToken } from '@/utils/google-auth.utils';
-import { readDriveFile } from '@/utils/google-drive.utils';
-import { mergeStates } from '@/utils/merge-snapshots.utils';
-import { chromeStorage } from '@/utils/storage.utils';
+import { chromeStorage, getGoogleToken, getOrCreateDeviceId, mergeStates, readDriveFile } from '@/utils';
 import { DriveSnapshotSchema, PersistedSeriesStore, PersistedSeriesStoreSchema } from '@/zod-schemas';
 
 interface SyncMetaSnapshot {

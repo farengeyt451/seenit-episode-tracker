@@ -1,4 +1,4 @@
-import { ImportFileResult } from '@/enums/ImportFileResult';
+import { ImportFileResult } from '@/enums';
 import { Nullable } from '@/utility-types';
 import { exportSeriesState, importSeriesState } from '@/utils';
 import { useState } from 'react';

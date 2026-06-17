@@ -1,3 +1,5 @@
+import { SeriesItem } from '@/components';
+import { EmptyTVIcon, InfoSearchBlock } from '@/components/ui';
 import { useFilterStore, useSeriesStore } from '@/store';
 import { FavoritesSeries, Series, TrackingSeriesData } from '@/types';
 import { Nullable } from '@/utility-types';
@@ -9,8 +11,6 @@ import { Squares2X2Icon } from '@heroicons/react/24/solid';
 import { clsx } from 'clsx';
 import { FC, JSX, useMemo } from 'react';
 import { useShallow } from 'zustand/shallow';
-import { SeriesItem } from '../series-item';
-import { EmptyTVIcon, InfoSearchBlock } from '../ui';
 import { selectFilteredSeries } from './selectFilteredSeries';
 
 interface SortableProps {

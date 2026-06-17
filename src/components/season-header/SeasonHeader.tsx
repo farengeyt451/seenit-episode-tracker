@@ -46,7 +46,7 @@ export const SeasonHeader: FC<SeasonHeaderProps> = ({
     >
       <div
         className={clsx(
-          'absolute -bottom-1.75 z-10 h-[3px] rounded-md',
+          'absolute -bottom-1.75 z-10 h-0.75 rounded-md',
           'transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)]',
           progress < 30
             ? 'light:bg-red-600 bg-red-500/70'

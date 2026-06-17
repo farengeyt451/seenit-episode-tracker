@@ -1,7 +1,6 @@
 import { LICENSE_STATUS_STORAGE_NAME } from '@/constants';
 import { Nullable } from '@/utility-types';
-import { activateLicense, checkLicense } from '@/utils';
-import { encodedStorage } from '@/utils/storage.utils';
+import { activateLicense, checkLicense, encodedStorage } from '@/utils';
 import { create } from 'zustand';
 import { createJSONStorage, devtools, persist } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';

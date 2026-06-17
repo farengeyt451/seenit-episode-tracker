@@ -1,5 +1,4 @@
-import { EmptySeriesState, EpisodesGrid, Header, SeasonHeader, Sidebar } from '@/components';
-import { SeriesHeader } from '@/components/series-header';
+import { EmptySeriesState, EpisodesGrid, Header, SeasonHeader, SeriesHeader, Sidebar } from '@/components';
 import { LinearProgress, SeenitDialog, SeenitDialogHandle, WelcomeTVIcon } from '@/components/ui';
 import { SeriesStatus } from '@/enums';
 import { useGoogleSync, useSeriesCompletionReward } from '@/hooks';

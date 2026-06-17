@@ -1,4 +1,4 @@
-import { SearchInput } from '@/components/search-input';
+import { SearchInput } from '@/components';
 import { useFilterStore } from '@/store';
 import { FC, JSX } from 'react';
 import { useShallow } from 'zustand/shallow';

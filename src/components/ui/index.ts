@@ -1,3 +1,4 @@
+export { FavoritePattern } from './favorite-pattern';
 export { InfoSearchBlock } from './info-search-block';
 export { ItemImage } from './item-image';
 export { LinearProgress } from './linear-progress';

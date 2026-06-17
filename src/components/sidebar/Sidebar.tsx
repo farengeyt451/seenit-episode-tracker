@@ -1,6 +1,4 @@
-import { Filter, SearchResults, SeriesList } from '@/components';
-import { Search } from '@/components/search';
-import { SidebarModeSwitch } from '@/components/sidebar-mode-switch';
+import { Filter, Search, SearchResults, SeriesList, SidebarModeSwitch } from '@/components';
 import { ErrorTVIcon, InfoSearchBlock, LockWrapper, SeenItButton } from '@/components/ui';
 import { KeyboardKey } from '@/enums';
 import { useKeyDown } from '@/hooks';

@@ -1,4 +1,4 @@
-import { SearchInput, SearchInputHandle } from '@/components/search-input';
+import { SearchInput, SearchInputHandle } from '@/components';
 import { useSearchStore, useSeriesStore } from '@/store';
 import { Nullable } from '@/utility-types';
 import { FC, JSX, useEffect, useRef } from 'react';

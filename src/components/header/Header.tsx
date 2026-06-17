@@ -8,6 +8,7 @@ import { CloudArrowDownIcon, CloudArrowUpIcon, CloudIcon, MoonIcon, SunIcon } fr
 import { clsx } from 'clsx';
 import { JSX, memo, useEffect } from 'react';
 import { useShallow } from 'zustand/shallow';
+
 export const Header = memo((): JSX.Element => {
   const setSidebarOpenState = useSidebarStore(state => state.setSidebarOpenState);
 

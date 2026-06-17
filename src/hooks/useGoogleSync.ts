@@ -10,8 +10,7 @@
 // is read directly from useSyncStore by the Settings dialog.
 
 import { SYNC_DEBOUNCE_MS } from '@/constants';
-import { useSeriesStore } from '@/store/useSeriesStore';
-import { isSyncApplyingRemoteWrite, useSyncStore } from '@/store/useSyncStore';
+import { isSyncApplyingRemoteWrite, useSeriesStore, useSyncStore } from '@/store';
 import { useEffect, useRef } from 'react';
 
 export const useGoogleSync = (): void => {

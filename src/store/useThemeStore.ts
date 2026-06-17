@@ -1,6 +1,6 @@
 import { THEME_STORAGE_NAME } from '@/constants';
 import { Theme } from '@/enums';
-import { encodedStorage } from '@/utils/storage.utils';
+import { encodedStorage } from '@/utils';
 import { create } from 'zustand';
 import { createJSONStorage, devtools, persist } from 'zustand/middleware';
 

@@ -1,6 +1,6 @@
 import { DEVICE_ID_STORAGE_NAME } from '@/constants';
 import { Nullable } from '@/utility-types';
-import { chromeStorage } from '@/utils/storage.utils';
+import { chromeStorage } from '@/utils';
 
 let cachedDeviceId: Nullable<string> = null;
 let inflight: Nullable<Promise<string>> = null;
