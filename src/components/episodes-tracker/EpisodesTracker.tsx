@@ -204,8 +204,6 @@ export const EpisodesTracker: FC = (): JSX.Element => {
                   image={activeSeries?.image ?? null}
                   rating={activeSeries?.rating?.average ?? null}
                   genres={activeSeries?.genres ?? []}
-                  premiered={activeSeries?.premiered ?? null}
-                  ended={activeSeries?.ended ?? null}
                   watched={seriesCompletion.watched}
                   total={seriesCompletion.total}
                   toggleFavorites={handleToggleFavorites}

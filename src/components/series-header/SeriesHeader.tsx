@@ -1,12 +1,10 @@
-import { ItemImage, LockWrapper, SeenitChip } from '@/components/ui';
+import { ItemImage, LockWrapper } from '@/components/ui';
 import { SeriesStatus } from '@/enums';
 import { useLicenseStore, useSeriesStore } from '@/store';
 import { Image } from '@/types';
 import { Nullable } from '@/utility-types';
-import { getYear } from '@/utils';
 import { Button } from '@headlessui/react';
 import { ArrowPathIcon, StarIcon, TrashIcon } from '@heroicons/react/24/solid';
-import { StarIcon as StarSolidIcon } from '@heroicons/react/20/solid';
 import { clsx } from 'clsx';
 import { FC, JSX } from 'react';
 import { useShallow } from 'zustand/shallow';
@@ -18,8 +16,6 @@ interface SeriesHeaderProps {
   image: Nullable<Image>;
   rating: Nullable<number>;
   genres: string[];
-  premiered: Nullable<string>;
-  ended: Nullable<string>;
   watched: number;
   total: number;
   remove: () => void;
@@ -35,31 +31,34 @@ const actionButtonBaseClasses = clsx(
   'disabled:cursor-default disabled:opacity-50 disabled:pointer-events-none',
 );
 
-const getStatusBgClass = (status: Nullable<SeriesStatus>): string => {
-  if (!status) return 'bg-gray-700';
-
+const getStatusDotClass = (status: Nullable<SeriesStatus>): string => {
   switch (true) {
     case status === SeriesStatus.Running:
-      return 'bg-green-700';
+      return 'bg-green-500 light:bg-green-600';
     case status === SeriesStatus.InDevelopment:
-      return 'bg-yellow-700';
+      return 'bg-yellow-500 light:bg-yellow-600';
     case status === SeriesStatus.Ended:
-      return 'bg-violet-700';
+      return 'bg-violet-400 light:bg-violet-600';
     case status === SeriesStatus.ToBeDetermined:
-      return 'bg-red-700';
+      return 'bg-red-500 light:bg-red-600';
     default:
-      return 'bg-gray-700';
+      return 'bg-gray-500 light:bg-slate-400';
   }
 };
 
-const getLifeSpan = (premiered: Nullable<string>, ended: Nullable<string>): Nullable<string> => {
-  const start = getYear(premiered);
-  const end = getYear(ended);
-
-  if (start && end) return `${start} – ${end}`;
-  if (start) return `${start} –`;
-  if (end) return `${end}`;
-  return null;
+const getRatingChipClass = (rating: number): string => {
+  switch (true) {
+    case rating >= 8:
+      return 'bg-green-700 light:bg-green-500';
+    case rating >= 6:
+      return 'bg-yellow-700 light:bg-yellow-500';
+    case rating >= 3:
+      return 'bg-orange-700 light:bg-orange-500';
+    case rating >= 1:
+      return 'bg-red-700 light:bg-red-500';
+    default:
+      return 'bg-gray-700 light:bg-slate-400';
+  }
 };
 
 const getProgressColor = (progress: number): string => {
@@ -82,8 +81,6 @@ export const SeriesHeader: FC<SeriesHeaderProps> = ({
   image,
   rating,
   genres,
-  premiered,
-  ended,
   watched,
   total,
   toggleFavorites,
@@ -98,37 +95,17 @@ export const SeriesHeader: FC<SeriesHeaderProps> = ({
     })),
   );
 
-  const lifeSpan = getLifeSpan(premiered, ended);
   const topGenres = genres?.slice(0, 2).join(' · ');
   const progress = total > 0 ? Math.round((watched / total) * 100) : 0;
 
   return (
     <div
       data-tag="series-header"
-      className="relative -mx-5 -mt-6 mb-1 overflow-hidden px-5 pt-6 pb-4"
+      className="mb-1"
     >
-      {/* Blurred poster backdrop for cinematic, per-show theming */}
-      {image?.original && (
-        <div
-          data-tag="series-header__backdrop"
-          aria-hidden="true"
-          className="absolute inset-0 scale-110 bg-cover bg-center opacity-30 blur-2xl light:opacity-25"
-          style={{ backgroundImage: `url(${image.original})` }}
-        />
-      )}
-      {/* Scrim keeps text legible over the backdrop */}
-      <div
-        aria-hidden="true"
-        className={clsx(
-          'absolute inset-0',
-          'bg-linear-to-b from-gray-900/50 via-gray-900/80 to-gray-900',
-          'light:from-slate-200/40 light:via-slate-200/75 light:to-slate-200',
-        )}
-      />
-
       <div
         data-tag="series-header__content"
-        className="light:text-slate-900 relative z-10 flex items-start justify-between gap-3 text-gray-200"
+        className="light:text-slate-900 flex items-start justify-between gap-3 text-gray-200"
       >
         <div
           data-tag="series-header__info"
@@ -152,41 +129,55 @@ export const SeriesHeader: FC<SeriesHeaderProps> = ({
             data-tag="series-header__meta"
             className="flex min-w-0 flex-col gap-1.5 pt-0.5"
           >
-            <div className="flex min-w-0 items-center gap-2">
-              <h3
-                data-tag="series-header__title"
-                title={title}
-                className="min-w-0 max-w-44 cursor-default truncate text-[1.375rem] leading-tight font-medium"
-              >
-                {title}
-              </h3>
-              {status && (
-                <SeenitChip
-                  data-tag="series-header__status"
-                  className={clsx(getStatusBgClass(status), 'shrink-0 rounded-full px-2 py-1')}
-                >
-                  <span className="p-0.5 text-xs text-white">{status}</span>
-                </SeenitChip>
-              )}
-            </div>
+            <h3
+              data-tag="series-header__title"
+              title={title}
+              className="min-w-0 cursor-default truncate text-[1.375rem] leading-tight font-medium"
+            >
+              {title}
+            </h3>
 
-            {(rating || lifeSpan || topGenres) && (
+            {(rating || status) && (
               <div
                 data-tag="series-header__facts"
-                className="light:text-slate-700 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-gray-300"
+                className="flex items-center gap-2 text-xs"
               >
                 {rating ? (
-                  <span className="inline-flex items-center gap-0.5 font-semibold">
-                    <StarSolidIcon className="size-3.5 text-amber-400 light:text-amber-500" />
+                  <span
+                    data-tag="series-header__rating"
+                    title={`Rating ${rating}`}
+                    className={clsx(
+                      'inline-flex items-center rounded-md px-1.5 py-px font-bold text-white tabular-nums',
+                      getRatingChipClass(rating),
+                    )}
+                  >
                     {rating}
                   </span>
                 ) : null}
-                {rating && lifeSpan ? <span className="opacity-40">•</span> : null}
-                {lifeSpan ? <span>{lifeSpan}</span> : null}
-                {(rating || lifeSpan) && topGenres ? <span className="opacity-40">•</span> : null}
-                {topGenres ? <span className="truncate">{topGenres}</span> : null}
+                {status ? (
+                  <span
+                    data-tag="series-header__status"
+                    title={status}
+                    className="light:text-slate-500 inline-flex items-center gap-1.5 font-medium text-gray-400"
+                  >
+                    <span
+                      aria-hidden="true"
+                      className={clsx('size-1.5 shrink-0 rounded-full', getStatusDotClass(status))}
+                    />
+                    {status}
+                  </span>
+                ) : null}
               </div>
             )}
+
+            {topGenres ? (
+              <p
+                data-tag="series-header__genres"
+                className="light:text-slate-600 truncate text-xs text-gray-400"
+              >
+                {topGenres}
+              </p>
+            ) : null}
 
             {total > 0 && (
               <div
