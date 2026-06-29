@@ -269,7 +269,7 @@ export const useSeriesStore = create<SeriesStore & SeriesActions>()(
                 if (!episode) return;
 
                 episode.isWatched = isWatched;
-                episode.timestamp = isWatched ? getISODateNow() : null;
+                episode.timestamp = getISODateNow();
               },
               false,
               SeriesActionTypes.ToggleWatched,
@@ -294,8 +294,10 @@ export const useSeriesStore = create<SeriesStore & SeriesActions>()(
                     }
 
                     case ToggleAllWatchedMode.Reset: {
+                      if (!episode.isWatched) return;
+
                       episode.isWatched = false;
-                      episode.timestamp = null;
+                      episode.timestamp = getISODateNow();
                       return;
                     }
                   }

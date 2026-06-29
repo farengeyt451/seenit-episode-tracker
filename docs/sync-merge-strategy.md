@@ -108,6 +108,10 @@ value (TVMaze timestamp — higher = more recently refreshed from the API).
 merge([A_v1, B], [A_v2, C])  → [A_v2, B, C]   (A_v2 wins; B and C are new on the other side)
 ```
 
+Series metadata is API-sourced (name, poster, status, seasons, …), so the
+freshest TVMaze copy is the right winner; this is independent of the user's
+watched-state activity, which is reconciled separately in `trackingSeriesData`.
+
 ### `trackingSeriesData`
 
 **Rule:** additive at the episode level, then filter by tombstones.
