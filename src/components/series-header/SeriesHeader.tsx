@@ -199,7 +199,7 @@ export const SeriesHeader: FC<SeriesHeaderProps> = ({
             {total > 0 && (
               <div
                 data-tag="series-header__progress"
-                className="flex items-center gap-2"
+                className="flex cursor-default items-center gap-2"
               >
                 <div className="light:bg-slate-300/80 h-1 w-24 overflow-hidden rounded-full bg-gray-700/80">
                   <div
