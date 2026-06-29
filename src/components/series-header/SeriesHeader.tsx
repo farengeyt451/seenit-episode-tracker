@@ -109,7 +109,7 @@ export const SeriesHeader: FC<SeriesHeaderProps> = ({
       >
         <div
           data-tag="series-header__info"
-          className="flex min-w-0 gap-3"
+          className="flex min-w-0 gap-4"
         >
           {/* Crisp portrait poster */}
           <div
