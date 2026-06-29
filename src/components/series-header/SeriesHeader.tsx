@@ -163,7 +163,7 @@ export const SeriesHeader: FC<SeriesHeaderProps> = ({
                     {status === SeriesStatus.Running ? (
                       <span
                         aria-hidden="true"
-                        className="relative flex size-2 shrink-0"
+                        className="relative inline-flex size-2 shrink-0 items-center justify-center"
                       >
                         <span
                           className={clsx(
