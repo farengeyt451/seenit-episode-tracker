@@ -1,6 +1,8 @@
 <div align="center">
   <img src="public/icon-128.png" alt="Seenit! Logo" width="120" height="120"/>
 
+<br />
+
 # Seenit! - Episode Tracker
 
   <p align="center">
@@ -32,13 +34,6 @@
 <div align="center">
   <img src="promo/seenit-promo-1280x800-v2.png" alt="Seenit! episode tracker showing a series poster, rating, status, genres, and episode progress" width="100%" />
   <br />
-  <br />
-  <table>
-    <tr>
-      <td width="50%"><img src="promo/seenit-promo-myseries-1280x800-v2.png" alt="My Series — all your tracked shows in one place" /></td>
-      <td width="50%"><img src="promo/seenit-promo-find-1280x800-v2.png" alt="Find Series — search and add any show" /></td>
-    </tr>
-  </table>
   <br />
   <img src="promo/seenit-promo-themes-1280x800-v2.png" alt="Seenit! in both dark and light themes" width="100%" />
 </div>
