@@ -28,6 +28,7 @@ export const EpisodesTracker: FC = (): JSX.Element => {
     isRefreshing,
     activeSeriesId,
     isRewardShownMap,
+    seriesData,
     trackingSeriesData,
     favoritesSeriesMap,
     setIsRewardShown,
@@ -40,6 +41,7 @@ export const EpisodesTracker: FC = (): JSX.Element => {
       isRefreshing: state.isRefreshing,
       activeSeriesId: state.activeSeriesId,
       isRewardShownMap: state.isRewardShownMap,
+      seriesData: state.seriesData,
       trackingSeriesData: state.trackingSeriesData,
       favoritesSeriesMap: state.favoritesSeriesMap,
       setIsRewardShown: state.setIsRewardShown,
@@ -64,6 +66,11 @@ export const EpisodesTracker: FC = (): JSX.Element => {
 
   const activeTrackingSeries: Nullable<TrackingSeries> =
     activeSeriesId && trackingSeriesData ? trackingSeriesData[activeSeriesId] : null;
+
+  const activeSeries = useMemo(
+    () => (activeSeriesId ? (seriesData?.find(series => series.id === activeSeriesId) ?? null) : null),
+    [seriesData, activeSeriesId],
+  );
 
   const seasonsDisplayData = useMemo<Nullable<SeasonDisplayData[]>>(() => {
     if (!activeTrackingSeries?.seasons) return null;
@@ -194,6 +201,13 @@ export const EpisodesTracker: FC = (): JSX.Element => {
                   title={activeTrackingSeries.name}
                   status={activeTrackingSeries.status}
                   isFavorite={favoritesSeriesMap[activeSeriesId]?.isFavorite}
+                  image={activeSeries?.image ?? null}
+                  rating={activeSeries?.rating?.average ?? null}
+                  genres={activeSeries?.genres ?? []}
+                  premiered={activeSeries?.premiered ?? null}
+                  ended={activeSeries?.ended ?? null}
+                  watched={seriesCompletion.watched}
+                  total={seriesCompletion.total}
                   toggleFavorites={handleToggleFavorites}
                   refreshSeriesData={handleRefreshSeriesData}
                   remove={handleSeriesRemove}
