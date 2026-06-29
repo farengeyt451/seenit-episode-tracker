@@ -116,7 +116,7 @@ export const SeriesHeader: FC<SeriesHeaderProps> = ({
             data-tag="series-header__poster"
             className={clsx(
               'h-24 w-16 shrink-0 overflow-hidden rounded-xl',
-              'shadow-lg shadow-gray-950/50 ring-1 ring-white/10 light:ring-black/10',
+              'light:ring-black/10 shadow-lg ring-1 shadow-gray-950/50 ring-white/10',
             )}
           >
             <ItemImage
@@ -127,7 +127,7 @@ export const SeriesHeader: FC<SeriesHeaderProps> = ({
 
           <div
             data-tag="series-header__meta"
-            className="flex min-w-0 flex-col gap-1.5 pt-0.5"
+            className="flex min-w-0 flex-col gap-1.5"
           >
             <h3
               data-tag="series-header__title"
@@ -140,14 +140,14 @@ export const SeriesHeader: FC<SeriesHeaderProps> = ({
             {(rating || status) && (
               <div
                 data-tag="series-header__facts"
-                className="flex items-center gap-2 text-xs"
+                className="flex cursor-default items-center gap-2.5 text-sm"
               >
                 {rating ? (
                   <span
                     data-tag="series-header__rating"
                     title={`Rating ${rating}`}
                     className={clsx(
-                      'inline-flex items-center rounded-md px-1.5 py-px font-bold text-white tabular-nums',
+                      'inline-flex items-center rounded-md px-1.5 py-px text-xs font-bold text-white tabular-nums',
                       getRatingChipClass(rating),
                     )}
                   >
@@ -158,12 +158,29 @@ export const SeriesHeader: FC<SeriesHeaderProps> = ({
                   <span
                     data-tag="series-header__status"
                     title={status}
-                    className="light:text-slate-500 inline-flex items-center gap-1.5 font-medium text-gray-400"
+                    className="light:text-slate-700 inline-flex items-center gap-1 font-medium text-gray-300"
                   >
-                    <span
-                      aria-hidden="true"
-                      className={clsx('size-1.5 shrink-0 rounded-full', getStatusDotClass(status))}
-                    />
+                    {status === SeriesStatus.Running ? (
+                      <span
+                        aria-hidden="true"
+                        className="relative flex size-2 shrink-0"
+                      >
+                        <span
+                          className={clsx(
+                            'absolute inline-flex h-full w-full animate-ping rounded-full opacity-75',
+                            getStatusDotClass(status),
+                          )}
+                        />
+                        <span
+                          className={clsx('relative inline-flex size-1.5 rounded-full', getStatusDotClass(status))}
+                        />
+                      </span>
+                    ) : (
+                      <span
+                        aria-hidden="true"
+                        className={clsx('size-1.5 shrink-0 rounded-full', getStatusDotClass(status))}
+                      />
+                    )}
                     {status}
                   </span>
                 ) : null}
@@ -173,7 +190,7 @@ export const SeriesHeader: FC<SeriesHeaderProps> = ({
             {topGenres ? (
               <p
                 data-tag="series-header__genres"
-                className="light:text-slate-600 truncate text-xs text-gray-400"
+                className="light:text-slate-700 cursor-default truncate text-sm font-medium text-gray-300"
               >
                 {topGenres}
               </p>
@@ -182,7 +199,7 @@ export const SeriesHeader: FC<SeriesHeaderProps> = ({
             {total > 0 && (
               <div
                 data-tag="series-header__progress"
-                className="mt-0.5 flex items-center gap-2"
+                className="flex items-center gap-2"
               >
                 <div className="light:bg-slate-300/80 h-1 w-24 overflow-hidden rounded-full bg-gray-700/80">
                   <div
