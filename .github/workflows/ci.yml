@@ -16,12 +16,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 2
 
       - name: Setup Node.js environment
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: 24
           cache: 'npm'
@@ -38,7 +38,7 @@ jobs:
           cd dist_chrome && zip -r "../seenit-chrome-${VERSION}.zip" . && cd ..
 
       - name: Upload Chrome extension artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: vite-web-extension-chrome
           path: dist_chrome
