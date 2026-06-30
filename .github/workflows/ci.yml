@@ -52,6 +52,7 @@ jobs:
               if (found) exit
               if ($0 ~ "^## \\[" ver "\\]") { found=1; next }
             }
+            found && /^\[[^]]+\]: / { exit }
             found { print }
           ' CHANGELOG.md > RELEASE_NOTES.md
           if [ ! -s RELEASE_NOTES.md ]; then
