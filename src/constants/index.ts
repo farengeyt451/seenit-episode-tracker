@@ -27,6 +27,8 @@ export const SERIES_STORAGE_NAME = 'series-storage';
 
 export const THEME_STORAGE_NAME = 'theme-storage';
 
+export const SETTINGS_STORAGE_NAME = 'settings-storage';
+
 export const LICENSE_STATUS_STORAGE_NAME = 'license-status-storage';
 
 export const ACTIVATE_LICENSE = `${BASE_LICENSE_URL}/${BASE_LICENSE_API.ACTIVATE_LICENSE}`;

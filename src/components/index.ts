@@ -2,6 +2,7 @@ export { EmptySeriesState } from './empty-series-state';
 export { EpisodesGrid } from './episodes-grid';
 export { EpisodesTracker } from './episodes-tracker';
 export { Filter } from './filter';
+export { Footer } from './footer';
 export { Header } from './header';
 export { Search } from './search';
 export { SearchInput } from './search-input';

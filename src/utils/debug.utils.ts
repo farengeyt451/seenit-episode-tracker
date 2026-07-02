@@ -1,5 +1,5 @@
 import { SERIES_STORAGE_NAME } from '@/constants';
-import { useSyncStore } from '@/store';
+import { useSettingsStore, useSyncStore } from '@/store';
 import { chromeStorage, getGoogleToken, getOrCreateDeviceId, mergeStates, readDriveFile } from '@/utils';
 import { DriveSnapshotSchema, PersistedSeriesStore, PersistedSeriesStoreSchema } from '@/zod-schemas';
 
@@ -27,6 +27,9 @@ interface SeenitDebug {
   getLocalData: () => Promise<void>;
   getCloudData: () => Promise<void>;
   dryRunMerge: () => Promise<void>;
+  showFooter: () => void;
+  hideFooter: () => void;
+  toggleFooter: () => void;
 }
 
 declare global {
@@ -113,6 +116,21 @@ const dryRunMerge = async (): Promise<void> => {
   console.log('📺', 'Seenit Dry Run Merge', result);
 };
 
+// Toggle the popup footer (GitHub / LinkedIn links). Persisted locally, never cloud-synced.
+const setFooter = (isFooterVisible: boolean): void => {
+  useSettingsStore.getState().setFooterVisible(isFooterVisible);
+  console.log('📺', `Seenit Footer ${isFooterVisible ? 'shown' : 'hidden'}`);
+};
+
+const showFooter = (): void => setFooter(true);
+
+const hideFooter = (): void => setFooter(false);
+
+const toggleFooter = (): void => {
+  useSettingsStore.getState().toggleFooter();
+  console.log('📺', `Seenit Footer ${useSettingsStore.getState().isFooterVisible ? 'shown' : 'hidden'}`);
+};
+
 // Print available commands. Keep in sync with SeenitDebug.
 const help = (): void => {
   console.table([
@@ -126,6 +144,9 @@ const help = (): void => {
       logs: '{local,cloud,merged,changed}',
       purpose: 'preview mergeStates() result without writing',
     },
+    { cmd: 'showFooter()', logs: 'confirmation', purpose: 'show the popup footer links' },
+    { cmd: 'hideFooter()', logs: 'confirmation', purpose: 'hide the popup footer links' },
+    { cmd: 'toggleFooter()', logs: 'confirmation', purpose: 'toggle the popup footer links' },
   ]);
 };
 
@@ -137,5 +158,8 @@ if (typeof window !== 'undefined') {
     getLocalData,
     getCloudData,
     dryRunMerge,
+    showFooter,
+    hideFooter,
+    toggleFooter,
   };
 }

@@ -1,8 +1,8 @@
-import { EmptySeriesState, EpisodesGrid, Header, SeasonHeader, SeriesHeader, Sidebar } from '@/components';
+import { EmptySeriesState, EpisodesGrid, Footer, Header, SeasonHeader, SeriesHeader, Sidebar } from '@/components';
 import { LinearProgress, SeenitDialog, SeenitDialogHandle, WelcomeTVIcon } from '@/components/ui';
 import { SeriesStatus } from '@/enums';
 import { useGoogleSync, useSeriesCompletionReward } from '@/hooks';
-import { useFilterStore, useSearchStore, useSeriesStore } from '@/store';
+import { useFilterStore, useSearchStore, useSeriesStore, useSettingsStore } from '@/store';
 import { TrackingSeason, TrackingSeries } from '@/types';
 import { Nullable } from '@/utility-types';
 import { Transition } from '@headlessui/react';
@@ -61,6 +61,8 @@ export const EpisodesTracker: FC = (): JSX.Element => {
       clearSearch: state.clearSearch,
     })),
   );
+
+  const isFooterVisible = useSettingsStore(state => state.isFooterVisible);
 
   const dialogRef = useRef<SeenitDialogHandle>(null);
 
@@ -273,6 +275,9 @@ export const EpisodesTracker: FC = (): JSX.Element => {
           )}
         </div>
       </div>
+
+      {/* Footer */}
+      {isFooterVisible && <Footer />}
 
       <div className="absolute bottom-10 z-50 flex w-full justify-center">
         <span id={RewardId.Balloons}></span>

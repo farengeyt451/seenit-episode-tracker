@@ -13,5 +13,7 @@ export { SupportLink } from './support-link';
 export { EmptyTVIcon } from './svg/EmptyTVIcon';
 export { ErrorTVIcon } from './svg/ErrorTVIcon';
 export { FilterIcon } from './svg/FilterIcon';
+export { GitHubIcon } from './svg/GitHubIcon';
+export { LinkedInIcon } from './svg/LinkedInIcon';
 export { TypingTVIcon } from './svg/TypingTVIcon';
 export { WelcomeTVIcon } from './svg/WelcomeTVIcon';
