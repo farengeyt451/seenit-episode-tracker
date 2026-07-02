@@ -272,6 +272,9 @@ const pickNewerOrder = (
   local: NonNullable<PersistedSeriesStore['seriesOrder']>,
   cloud: NonNullable<PersistedSeriesStore['seriesOrder']>,
 ): NonNullable<PersistedSeriesStore['seriesOrder']> => {
+  if (local.ids.length === 0 && cloud.ids.length > 0) return cloud;
+  if (cloud.ids.length === 0 && local.ids.length > 0) return local;
+
   if (local.updatedAt && cloud.updatedAt) {
     return DateTime.fromISO(cloud.updatedAt) > DateTime.fromISO(local.updatedAt) ? cloud : local;
   }

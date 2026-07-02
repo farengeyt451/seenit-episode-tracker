@@ -10,9 +10,9 @@ export const Footer: FC = (): JSX.Element => {
     <footer
       data-tag="footer"
       className={clsx(
-        'flex shrink-0 items-center justify-center gap-2 border-t-2 px-3 py-2 text-xs font-medium',
+        'flex shrink-0 items-center justify-center gap-2 border-t px-3 py-2.5 text-xs font-medium',
         'border-gray-700 bg-gray-900 text-gray-400',
-        'light:border-slate-500/60 light:bg-slate-200 light:text-slate-500',
+        'light:border-slate-500/60 light:bg-slate-200 light:text-slate-700',
       )}
     >
       <a
@@ -30,13 +30,6 @@ export const Footer: FC = (): JSX.Element => {
         <GitHubIcon className="size-4 transition-transform duration-300 group-hover:scale-110" />
         <span>Star on GitHub</span>
       </a>
-
-      <span
-        aria-hidden="true"
-        className="light:text-slate-400 text-gray-600"
-      >
-        ●
-      </span>
 
       <a
         data-tag="footer__link-linkedin"

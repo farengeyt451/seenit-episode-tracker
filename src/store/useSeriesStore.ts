@@ -310,17 +310,15 @@ export const useSeriesStore = create<SeriesStore & SeriesActions>()(
           toggleFavorites: (seriesId: number) => {
             set(
               draft => {
-                if (draft.favoritesSeriesMap[seriesId]) {
-                  draft.favoritesSeriesMap[seriesId].isFavorite = draft.favoritesSeriesMap[seriesId].isFavorite
-                    ? false
-                    : true;
+                const existing = draft.favoritesSeriesMap[seriesId];
+                if (existing) {
+                  existing.isFavorite = !existing.isFavorite;
+                  existing.timestamp = getISODateNow();
                 } else {
                   draft.favoritesSeriesMap[seriesId] = {
                     isFavorite: true,
-                    timestamp: null,
+                    timestamp: getISODateNow(),
                   };
-
-                  draft.favoritesSeriesMap[seriesId].timestamp = getISODateNow();
                 }
               },
               false,
