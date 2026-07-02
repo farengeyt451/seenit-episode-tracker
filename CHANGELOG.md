@@ -5,7 +5,18 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.1.0] - 2026-06-30
+## [1.1.1] - 03/07/2026
+
+### Added
+
+- Footer in the popup with quick links to the project's GitHub repository and the author's LinkedIn.
+
+### Fixed
+
+- Favorites now sync reliably: toggling a favorite stamps a fresh timestamp on every change, so un-favoriting on one device is no longer reverted back to favorite when devices merge.
+- Series order is preserved on a freshly installed device: a populated cloud ordering is no longer discarded in favor of the empty local order during the first sync.
+
+## [1.1.0] - 30/06/2026
 
 ### Added
 
@@ -26,7 +37,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Episode timestamp logic now tracks watched state accurately.
 
-## [1.0.7] - 2026-06-17
+## [1.0.7] - 17/06/2026
 
 ### Added
 
@@ -38,7 +49,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Disabled the disconnect button while a sync is in progress.
 - Refactored component imports for consistency across the codebase.
 
-## [1.0.6] - 2026-06-14
+## [1.0.6] - 14/06/2026
 
 ### Added
 
@@ -52,13 +63,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - More robust favorites toggle logic, including a null check for episode timestamps.
 
-## [1.0.5] - 2026-06-03
+## [1.0.5] - 03/06/2026
 
 ### Changed
 
 - Identity permission is now requested dynamically, only when it is actually needed.
 
-## [1.0.4] - 2026-06-02
+## [1.0.4] - 02/06/2026
 
 ### Changed
 
@@ -68,7 +79,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Corrected punctuation and wording in the extension description.
 
-## [1.0.3] - 2026-06-01
+## [1.0.3] - 01/06/2026
 
 ### Added
 
@@ -81,12 +92,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Documentation updates clarifying cloud sync availability.
 
-## [1.0.2] - 2026-05-25
+## [1.0.2] - 25/05/2026
 
 ### Added
 
 - Initial public release: track your favorite series and episodes in a simple, cozy interface, with favorites, dark and light themes, and offline support. Series metadata is powered by TheTVDB.
 
+[1.1.1]: https://github.com/farengeyt451/seenit-extension/releases/tag/v1.1.1
 [1.1.0]: https://github.com/farengeyt451/seenit-extension/releases/tag/v1.1.0
 [1.0.7]: https://github.com/farengeyt451/seenit-extension/releases/tag/v1.0.7
 [1.0.6]: https://github.com/farengeyt451/seenit-extension/releases/tag/v1.0.6
