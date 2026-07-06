@@ -104,6 +104,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial public release: track your favorite series and episodes in a simple, cozy interface, with favorites, dark and light themes, and offline support. Series metadata is powered by TheTVDB.
 
+[1.1.2]: https://github.com/farengeyt451/seenit-extension/releases/tag/v1.1.2
 [1.1.1]: https://github.com/farengeyt451/seenit-extension/releases/tag/v1.1.1
 [1.1.0]: https://github.com/farengeyt451/seenit-extension/releases/tag/v1.1.0
 [1.0.7]: https://github.com/farengeyt451/seenit-extension/releases/tag/v1.0.7
