@@ -138,11 +138,11 @@
   }
 
   .animate-cloud-pull {
-    animation: cloud-arrow-down 1.4s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+    animation: cloud-arrow-down 1s cubic-bezier(0.45, 0, 0.55, 1) infinite;
   }
 
   .animate-cloud-push {
-    animation: cloud-arrow-up 1.4s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+    animation: cloud-arrow-up 1s cubic-bezier(0.45, 0, 0.55, 1) infinite;
   }
 }
 

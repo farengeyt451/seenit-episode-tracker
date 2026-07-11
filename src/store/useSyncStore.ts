@@ -4,7 +4,6 @@ import {
   SERIES_STORAGE_NAME,
   SERIES_STORE_VERSION,
   SYNC_META_STORAGE_NAME,
-  SYNC_PHASE_DELAY_MS,
 } from '@/constants';
 import { SyncPhase, SyncStatus } from '@/enums';
 import { Nullable } from '@/utility-types';
@@ -145,7 +144,8 @@ const sameSnapshot = (a: PersistedSeriesStore, b: PersistedSeriesStore): boolean
   }
 };
 
-const phaseDelay = (): Promise<void> => new Promise(resolve => setTimeout(resolve, SYNC_PHASE_DELAY_MS));
+// Artificial delay
+// const phaseDelay = (): Promise<void> => new Promise(resolve => setTimeout(resolve, SYNC_PHASE_DELAY_MS));
 
 // ─── Sync cycle ───────────────────────────────────────────────────────────────
 //
@@ -191,8 +191,6 @@ const runSyncCycle = async ({
   // getDriveFileMeta call when this is the first sync after auth.
   onPhase?.(SyncPhase.Pulling);
 
-  await phaseDelay();
-
   let resolvedFileId = fileId;
   let remoteModifiedTime: string;
 
@@ -206,8 +204,6 @@ const runSyncCycle = async ({
     } else {
       // First-ever connect on this Drive account
       onPhase?.(SyncPhase.Pushing);
-
-      await phaseDelay();
 
       const local = await readLocalSnapshot();
       const state = local?.state ?? emptyPersistedState();
@@ -269,8 +265,6 @@ const runSyncCycle = async ({
 
   // ── Step 5: push the merged state to Drive ────────────────────────────────
   onPhase?.(SyncPhase.Pushing);
-
-  await phaseDelay();
 
   const snapshot = buildDriveSnapshot(mergedState, mergedVersion, deviceId);
   const pushed = await updateDriveFile(token, resolvedFileId, snapshot);
