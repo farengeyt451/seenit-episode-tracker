@@ -1,13 +1,22 @@
 import { SettingsDialog } from '@/components';
 import { LockWrapper, SupportLink } from '@/components/ui';
-import { SyncPhase, Theme } from '@/enums';
+import { SyncPhase, SyncStatus, Theme } from '@/enums';
 import { useLicenseStore, useSidebarStore, useSyncStore, useThemeStore } from '@/store';
 import { Button } from '@headlessui/react';
 import { ArrowLongRightIcon } from '@heroicons/react/20/solid';
-import { CloudArrowDownIcon, CloudArrowUpIcon, CloudIcon, MoonIcon, SunIcon } from '@heroicons/react/24/solid';
+import {
+  CheckIcon,
+  CloudArrowDownIcon,
+  CloudArrowUpIcon,
+  CloudIcon,
+  MoonIcon,
+  SunIcon,
+} from '@heroicons/react/24/solid';
 import { clsx } from 'clsx';
-import { JSX, memo, useEffect } from 'react';
+import { JSX, memo, useEffect, useRef, useState } from 'react';
 import { useShallow } from 'zustand/shallow';
+
+const SYNCED_CONFIRMATION_MS = 2000;
 
 export const Header = memo((): JSX.Element => {
   const setSidebarOpenState = useSidebarStore(state => state.setSidebarOpenState);
@@ -21,18 +30,23 @@ export const Header = memo((): JSX.Element => {
 
   const isLicenseActivated = useLicenseStore(state => state.isLicenseActivated);
 
-  const { isConnected, syncPhase, syncNow } = useSyncStore(
+  const { isConnected, syncPhase, syncStatus, syncNow } = useSyncStore(
     useShallow(state => ({
       isConnected: state.isConnected,
       syncPhase: state.phase,
+      syncStatus: state.status,
       syncNow: state.syncNow,
     })),
   );
+
+  const [justSynced, setJustSynced] = useState(false);
+  const wasBusyRef = useRef(false);
 
   const isDarkTheme = theme === Theme.Dark;
   const isPulling = syncPhase === SyncPhase.Pulling;
   const isPushing = syncPhase === SyncPhase.Pushing;
   const isCloudIdle = syncPhase === SyncPhase.Idle;
+  const showIdleCloud = isCloudIdle && !justSynced;
 
   const handleToggleTheme = () => {
     setTheme(theme === Theme.Light ? Theme.Dark : Theme.Light);
@@ -49,7 +63,9 @@ export const Header = memo((): JSX.Element => {
       ? 'Pulling changes from Google Drive'
       : isPushing
         ? 'Pushing changes to Google Drive'
-        : 'Sync with Google Drive';
+        : justSynced
+          ? 'Synced with Google Drive'
+          : 'Sync with Google Drive';
 
   const handleButtonMenuClick = () => {
     setSidebarOpenState(true);
@@ -62,6 +78,18 @@ export const Header = memo((): JSX.Element => {
   useEffect(() => {
     setDataThemeAttr(theme);
   }, [theme]);
+
+  useEffect(() => {
+    const isBusy = isPulling || isPushing;
+    const wasBusy = wasBusyRef.current;
+    wasBusyRef.current = isBusy;
+
+    if (wasBusy && !isBusy && syncStatus === SyncStatus.Success) {
+      setJustSynced(true);
+      const timer = setTimeout(() => setJustSynced(false), SYNCED_CONFIRMATION_MS);
+      return () => clearTimeout(timer);
+    }
+  }, [isPulling, isPushing, syncStatus]);
 
   return (
     <header
@@ -130,12 +158,38 @@ export const Header = memo((): JSX.Element => {
                 aria-hidden="true"
                 className={clsx(
                   'absolute size-6 transition-all duration-300 ease-out',
-                  isCloudIdle ? 'scale-100 rotate-0 opacity-100' : 'scale-75 -rotate-12 opacity-0',
-                  isConnected
-                    ? 'light:text-sky-600 light:hover:text-sky-700 text-sky-400 hover:text-sky-300'
-                    : 'light:text-slate-400 text-gray-500',
+                  'light:text-sky-600 light:hover:text-sky-700 text-sky-400 hover:text-sky-300',
+                  showIdleCloud ? 'scale-100 rotate-0 opacity-100' : 'scale-75 -rotate-12 opacity-0',
                 )}
               />
+
+              <div
+                data-tag="header__cloud-synced"
+                className={clsx(
+                  'absolute size-6 transition-all duration-300 ease-out',
+                  justSynced ? 'scale-100 opacity-100' : 'scale-75 opacity-0',
+                )}
+              >
+                <CloudIcon
+                  data-tag="header__icon-cloud-synced"
+                  aria-hidden="true"
+                  className={clsx(
+                    'absolute size-6',
+                    'light:text-emerald-600 text-emerald-400',
+                    justSynced && 'animate-cloud-check',
+                  )}
+                />
+                <CheckIcon
+                  data-tag="header__icon-check"
+                  aria-hidden="true"
+                  className={clsx(
+                    'absolute top-[calc(50%+1px)] left-[50%] size-3 -translate-x-2/4 -translate-y-2/4',
+                    'text-white dark:text-black',
+                    'stroke-[2.75] [stroke-linecap:round] [stroke-linejoin:round]',
+                    justSynced && 'animate-cloud-check',
+                  )}
+                ></CheckIcon>
+              </div>
 
               <CloudArrowDownIcon
                 data-tag="header__icon-cloud-pull"
