@@ -47,6 +47,7 @@ export const Header = memo((): JSX.Element => {
   const isPushing = syncPhase === SyncPhase.Pushing;
   const isCloudIdle = syncPhase === SyncPhase.Idle;
   const showIdleCloud = isCloudIdle && !justSynced;
+  const isSynced = isConnected && isCloudIdle && syncStatus === SyncStatus.Success;
 
   const handleToggleTheme = () => {
     setTheme(theme === Theme.Light ? Theme.Dark : Theme.Light);
@@ -210,6 +211,25 @@ export const Header = memo((): JSX.Element => {
                   isPushing ? 'animate-cloud-push scale-100 opacity-100' : 'scale-75 opacity-0',
                 )}
               />
+
+              <span
+                data-tag="header__sync-badge"
+                aria-hidden="true"
+                className={clsx(
+                  'absolute top-0 right-0 flex size-2.5 transition-all duration-300 ease-out',
+                  isSynced ? 'scale-100 opacity-100' : 'scale-0 opacity-0',
+                )}
+              >
+                {justSynced && (
+                  <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                )}
+                <span
+                  className={clsx(
+                    'relative inline-flex size-2.5 rounded-full bg-emerald-500',
+                    'light:ring-slate-200 ring-2 ring-gray-900',
+                  )}
+                />
+              </span>
             </Button>
           </div>
         )}

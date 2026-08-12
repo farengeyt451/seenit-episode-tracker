@@ -5,6 +5,12 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.4]
+
+### Added
+
+- Cloud sync status indicator in the header: a confirmation animation plays when a sync completes, and a persistent green badge shows when your data is up to date on Google Drive.
+
 ## [1.1.3]
 
 ### Changed
@@ -111,6 +117,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial public release: track your favorite series and episodes in a simple, cozy interface, with favorites, dark and light themes, and offline support. Series metadata is powered by TheTVDB.
 
+[1.1.4]: https://github.com/farengeyt451/seenit-extension/releases/tag/v1.1.4
 [1.1.3]: https://github.com/farengeyt451/seenit-extension/releases/tag/v1.1.3
 [1.1.2]: https://github.com/farengeyt451/seenit-extension/releases/tag/v1.1.2
 [1.1.1]: https://github.com/farengeyt451/seenit-extension/releases/tag/v1.1.1
