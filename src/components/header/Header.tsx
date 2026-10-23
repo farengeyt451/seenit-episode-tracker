@@ -150,11 +150,7 @@ export const Header = memo((): JSX.Element => {
                 <CloudIcon
                   data-tag="header__icon-cloud-synced"
                   aria-hidden="true"
-                  className={clsx(
-                    'absolute size-6',
-                    'light:text-emerald-600 text-emerald-400',
-                    isSynced && 'animate-cloud-check',
-                  )}
+                  className={clsx('absolute size-6', 'text-emerald-600', isSynced && 'animate-cloud-check')}
                 />
                 <svg
                   data-tag="header__icon-check"
@@ -162,12 +158,12 @@ export const Header = memo((): JSX.Element => {
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
-                  strokeWidth={3}
+                  strokeWidth={3.25}
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   className={clsx(
                     'absolute top-[calc(50%+1px)] left-[50%] size-3 -translate-x-2/4 -translate-y-2/4',
-                    'text-white dark:text-black',
+                    'text-white',
                     isSynced && 'animate-cloud-check',
                   )}
                 >
@@ -180,7 +176,7 @@ export const Header = memo((): JSX.Element => {
                 aria-hidden="true"
                 className={clsx(
                   'absolute size-6 transition-all duration-300 ease-out',
-                  'light:text-sky-600 text-sky-400',
+                  'text-sky-600',
                   isPulling ? 'animate-cloud-pull scale-100 opacity-100' : 'scale-75 opacity-0',
                 )}
               />
@@ -190,7 +186,7 @@ export const Header = memo((): JSX.Element => {
                 aria-hidden="true"
                 className={clsx(
                   'absolute size-6 transition-all duration-300 ease-out',
-                  'light:text-sky-600 text-sky-400',
+                  'text-sky-600',
                   isPushing ? 'animate-cloud-push scale-100 opacity-100' : 'scale-75 opacity-0',
                 )}
               />
