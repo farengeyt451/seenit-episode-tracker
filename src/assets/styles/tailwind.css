@@ -139,6 +139,38 @@
       emerge 0.5s ease-in-out;
   }
 
+  .seenit-canvas-glow {
+    background-image: radial-gradient(
+      120% 60% at 50% -15%,
+      rgba(124, 58, 237, 0.22) 0%,
+      rgba(37, 99, 235, 0.11) 42%,
+      transparent 74%
+    );
+  }
+
+  [data-theme='light'] .seenit-canvas-glow {
+    background-image: radial-gradient(
+      120% 60% at 50% -15%,
+      rgba(99, 102, 241, 0.12) 0%,
+      rgba(56, 189, 248, 0.07) 45%,
+      transparent 74%
+    );
+  }
+
+  .seenit-header-divider::after {
+    content: '';
+    inset-inline: 0;
+    background: var(--color-gray-700);
+    height: 2px;
+    position: absolute;
+    bottom: 0;
+    opacity: 0.8;
+  }
+
+  [data-theme='light'] .seenit-header-divider::after {
+    opacity: 0.5;
+  }
+
   .animate-indeterminate {
     transform: translateX(-100%) scaleX(1);
     transform-origin: left;

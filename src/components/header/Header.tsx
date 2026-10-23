@@ -178,7 +178,6 @@ export const Header = memo((): JSX.Element => {
                   isPulling ? 'animate-cloud-pull scale-100 opacity-100' : 'scale-75 opacity-0',
                 )}
               >
-                {/* White cloud sits behind and shows through the arrow cut-out, so the heroicons arrow reads as white */}
                 <CloudIcon
                   data-tag="header__icon-cloud-pull-arrow"
                   aria-hidden="true"
@@ -187,7 +186,7 @@ export const Header = memo((): JSX.Element => {
                 <CloudArrowDownIcon
                   data-tag="header__icon-cloud-pull"
                   aria-hidden="true"
-                  className="absolute size-6 text-sky-600"
+                  className="si absolute size-7 text-sky-600"
                 />
               </div>
 
@@ -198,7 +197,6 @@ export const Header = memo((): JSX.Element => {
                   isPushing ? 'animate-cloud-push scale-100 opacity-100' : 'scale-75 opacity-0',
                 )}
               >
-                {/* White cloud sits behind and shows through the arrow cut-out, so the heroicons arrow reads as white */}
                 <CloudIcon
                   data-tag="header__icon-cloud-push-arrow"
                   aria-hidden="true"
@@ -207,7 +205,7 @@ export const Header = memo((): JSX.Element => {
                 <CloudArrowUpIcon
                   data-tag="header__icon-cloud-push"
                   aria-hidden="true"
-                  className="absolute size-6 text-sky-600"
+                  className="absolute size-7 text-sky-600"
                 />
               </div>
             </Button>

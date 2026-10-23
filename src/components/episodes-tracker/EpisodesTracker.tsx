@@ -156,15 +156,12 @@ export const EpisodesTracker: FC = (): JSX.Element => {
   return (
     <main
       data-tag="e-tracker"
-      className={clsx('light:bg-slate-200 relative flex h-full w-full flex-col bg-gray-900')}
+      className={clsx('seenit-canvas-glow light:bg-slate-200 relative flex h-full w-full flex-col bg-gray-900')}
     >
       {/* Header */}
       <div
         data-tag="e-tracker__header"
-        className={clsx(
-          'h-height-header relative z-10 flex items-center border-b-2 border-gray-700 p-3 shadow-xl shadow-gray-900',
-          'light:border-slate-500/60 light:shadow-slate-200',
-        )}
+        className={clsx('seenit-header-divider h-height-header relative z-10 flex items-center p-3')}
       >
         <Header />
 
