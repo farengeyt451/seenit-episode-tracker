@@ -186,7 +186,7 @@ export const Header = memo((): JSX.Element => {
                 <CloudArrowDownIcon
                   data-tag="header__icon-cloud-pull"
                   aria-hidden="true"
-                  className="si absolute size-7 text-sky-600"
+                  className="absolute size-6 text-sky-600"
                 />
               </div>
 
@@ -205,7 +205,7 @@ export const Header = memo((): JSX.Element => {
                 <CloudArrowUpIcon
                   data-tag="header__icon-cloud-push"
                   aria-hidden="true"
-                  className="absolute size-7 text-sky-600"
+                  className="absolute size-6 text-sky-600"
                 />
               </div>
             </Button>
