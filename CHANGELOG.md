@@ -5,12 +5,12 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.1.5] - 23/10/2026
+## [1.1.5]
 
 ### Changed
 
-- The cloud sync indicator in the header now shows a steady green cloud with a checkmark whenever your data is up to date on Google Drive, instead of a brief confirmation flash and a separate corner badge.
-- Polished the header's cloud sync icons: the upload and download arrows now appear as crisp white on a solid blue cloud, with colors that stay consistent across light and dark themes.
+- Updated the cloud sync indicator in the header.
+- Polished the header's cloud sync icons.
 
 ## [1.1.4]
 
@@ -25,13 +25,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed the artificial delay between sync phases so cloud syncs complete faster.
 - Tuned the auto-sync debounce interval for more responsive Google Drive syncing.
 
-## [1.1.2] - 06/07/2026
+## [1.1.2]
 
 ### Added
 
 - The popup footer can now be dismissed with a close button; the hidden state is saved to storage and persists across sessions.
 
-## [1.1.1] - 03/07/2026
+## [1.1.1]
 
 ### Added
 
@@ -42,7 +42,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Favorites now sync reliably: toggling a favorite stamps a fresh timestamp on every change, so un-favoriting on one device is no longer reverted back to favorite when devices merge.
 - Series order is preserved on a freshly installed device: a populated cloud ordering is no longer discarded in favor of the empty local order during the first sync.
 
-## [1.1.0] - 30/06/2026
+## [1.1.0]
 
 ### Added
 
@@ -63,7 +63,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Episode timestamp logic now tracks watched state accurately.
 
-## [1.0.7] - 17/06/2026
+## [1.0.7]
 
 ### Added
 
@@ -75,7 +75,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Disabled the disconnect button while a sync is in progress.
 - Refactored component imports for consistency across the codebase.
 
-## [1.0.6] - 14/06/2026
+## [1.0.6]
 
 ### Added
 
@@ -89,13 +89,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - More robust favorites toggle logic, including a null check for episode timestamps.
 
-## [1.0.5] - 03/06/2026
+## [1.0.5]
 
 ### Changed
 
 - Identity permission is now requested dynamically, only when it is actually needed.
 
-## [1.0.4] - 02/06/2026
+## [1.0.4]
 
 ### Changed
 
@@ -105,7 +105,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Corrected punctuation and wording in the extension description.
 
-## [1.0.3] - 01/06/2026
+## [1.0.3]
 
 ### Added
 
@@ -118,7 +118,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Documentation updates clarifying cloud sync availability.
 
-## [1.0.2] - 25/05/2026
+## [1.0.2]
 
 ### Added
 
