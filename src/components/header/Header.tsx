@@ -4,19 +4,10 @@ import { SyncPhase, SyncStatus, Theme } from '@/enums';
 import { useLicenseStore, useSidebarStore, useSyncStore, useThemeStore } from '@/store';
 import { Button } from '@headlessui/react';
 import { ArrowLongRightIcon } from '@heroicons/react/20/solid';
-import {
-  CheckIcon,
-  CloudArrowDownIcon,
-  CloudArrowUpIcon,
-  CloudIcon,
-  MoonIcon,
-  SunIcon,
-} from '@heroicons/react/24/solid';
+import { CloudArrowDownIcon, CloudArrowUpIcon, CloudIcon, MoonIcon, SunIcon } from '@heroicons/react/24/solid';
 import { clsx } from 'clsx';
-import { JSX, memo, useEffect, useRef, useState } from 'react';
+import { JSX, memo, useEffect } from 'react';
 import { useShallow } from 'zustand/shallow';
-
-const SYNCED_CONFIRMATION_MS = 2000;
 
 export const Header = memo((): JSX.Element => {
   const setSidebarOpenState = useSidebarStore(state => state.setSidebarOpenState);
@@ -39,15 +30,12 @@ export const Header = memo((): JSX.Element => {
     })),
   );
 
-  const [justSynced, setJustSynced] = useState(false);
-  const wasBusyRef = useRef(false);
-
   const isDarkTheme = theme === Theme.Dark;
   const isPulling = syncPhase === SyncPhase.Pulling;
   const isPushing = syncPhase === SyncPhase.Pushing;
   const isCloudIdle = syncPhase === SyncPhase.Idle;
-  const showIdleCloud = isCloudIdle && !justSynced;
   const isSynced = isConnected && isCloudIdle && syncStatus === SyncStatus.Success;
+  const showIdleCloud = isCloudIdle && !isSynced;
 
   const handleToggleTheme = () => {
     setTheme(theme === Theme.Light ? Theme.Dark : Theme.Light);
@@ -58,15 +46,15 @@ export const Header = memo((): JSX.Element => {
     syncNow();
   };
 
-  const cloudButtonLabel = !isConnected
-    ? 'Cloud sync — not connected'
-    : isPulling
-      ? 'Pulling changes from Google Drive'
-      : isPushing
-        ? 'Pushing changes to Google Drive'
-        : justSynced
-          ? 'Synced with Google Drive'
-          : 'Sync with Google Drive';
+  const getCloudButtonLabel = (): string => {
+    if (!isConnected) return 'Cloud sync — not connected';
+    if (isPulling) return 'Pulling changes from Google Drive';
+    if (isPushing) return 'Pushing changes to Google Drive';
+    if (isSynced) return 'Synced with Google Drive';
+    return 'Sync with Google Drive';
+  };
+
+  const cloudButtonLabel = getCloudButtonLabel();
 
   const handleButtonMenuClick = () => {
     setSidebarOpenState(true);
@@ -79,18 +67,6 @@ export const Header = memo((): JSX.Element => {
   useEffect(() => {
     setDataThemeAttr(theme);
   }, [theme]);
-
-  useEffect(() => {
-    const isBusy = isPulling || isPushing;
-    const wasBusy = wasBusyRef.current;
-    wasBusyRef.current = isBusy;
-
-    if (wasBusy && !isBusy && syncStatus === SyncStatus.Success) {
-      setJustSynced(true);
-      const timer = setTimeout(() => setJustSynced(false), SYNCED_CONFIRMATION_MS);
-      return () => clearTimeout(timer);
-    }
-  }, [isPulling, isPushing, syncStatus]);
 
   return (
     <header
@@ -168,7 +144,7 @@ export const Header = memo((): JSX.Element => {
                 data-tag="header__cloud-synced"
                 className={clsx(
                   'absolute size-6 transition-all duration-300 ease-out',
-                  justSynced ? 'scale-100 opacity-100' : 'scale-75 opacity-0',
+                  isSynced ? 'scale-100 opacity-100' : 'scale-75 opacity-0',
                 )}
               >
                 <CloudIcon
@@ -177,19 +153,26 @@ export const Header = memo((): JSX.Element => {
                   className={clsx(
                     'absolute size-6',
                     'light:text-emerald-600 text-emerald-400',
-                    justSynced && 'animate-cloud-check',
+                    isSynced && 'animate-cloud-check',
                   )}
                 />
-                <CheckIcon
+                <svg
                   data-tag="header__icon-check"
                   aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={3}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                   className={clsx(
                     'absolute top-[calc(50%+1px)] left-[50%] size-3 -translate-x-2/4 -translate-y-2/4',
                     'text-white dark:text-black',
-                    'stroke-[2.75] [stroke-linecap:round] [stroke-linejoin:round]',
-                    justSynced && 'animate-cloud-check',
+                    isSynced && 'animate-cloud-check',
                   )}
-                ></CheckIcon>
+                >
+                  <path d="m4.5 12.75 6 6 9-13.5" />
+                </svg>
               </div>
 
               <CloudArrowDownIcon
@@ -211,25 +194,6 @@ export const Header = memo((): JSX.Element => {
                   isPushing ? 'animate-cloud-push scale-100 opacity-100' : 'scale-75 opacity-0',
                 )}
               />
-
-              <span
-                data-tag="header__sync-badge"
-                aria-hidden="true"
-                className={clsx(
-                  'absolute top-0 right-0 flex size-2.5 transition-all duration-300 ease-out',
-                  isSynced ? 'scale-100 opacity-100' : 'scale-0 opacity-0',
-                )}
-              >
-                {justSynced && (
-                  <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-                )}
-                <span
-                  className={clsx(
-                    'relative inline-flex size-2.5 rounded-full bg-emerald-500',
-                    'light:ring-slate-200 ring-2 ring-gray-900',
-                  )}
-                />
-              </span>
             </Button>
           </div>
         )}
