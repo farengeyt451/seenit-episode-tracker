@@ -171,25 +171,45 @@ export const Header = memo((): JSX.Element => {
                 </svg>
               </div>
 
-              <CloudArrowDownIcon
-                data-tag="header__icon-cloud-pull"
-                aria-hidden="true"
+              <div
+                data-tag="header__cloud-pull"
                 className={clsx(
                   'absolute size-6 transition-all duration-300 ease-out',
-                  'text-sky-600',
                   isPulling ? 'animate-cloud-pull scale-100 opacity-100' : 'scale-75 opacity-0',
                 )}
-              />
+              >
+                {/* White cloud sits behind and shows through the arrow cut-out, so the heroicons arrow reads as white */}
+                <CloudIcon
+                  data-tag="header__icon-cloud-pull-arrow"
+                  aria-hidden="true"
+                  className="absolute size-6 text-white"
+                />
+                <CloudArrowDownIcon
+                  data-tag="header__icon-cloud-pull"
+                  aria-hidden="true"
+                  className="absolute size-6 text-sky-600"
+                />
+              </div>
 
-              <CloudArrowUpIcon
-                data-tag="header__icon-cloud-push"
-                aria-hidden="true"
+              <div
+                data-tag="header__cloud-push"
                 className={clsx(
                   'absolute size-6 transition-all duration-300 ease-out',
-                  'text-sky-600',
                   isPushing ? 'animate-cloud-push scale-100 opacity-100' : 'scale-75 opacity-0',
                 )}
-              />
+              >
+                {/* White cloud sits behind and shows through the arrow cut-out, so the heroicons arrow reads as white */}
+                <CloudIcon
+                  data-tag="header__icon-cloud-push-arrow"
+                  aria-hidden="true"
+                  className="absolute size-6 text-white"
+                />
+                <CloudArrowUpIcon
+                  data-tag="header__icon-cloud-push"
+                  aria-hidden="true"
+                  className="absolute size-6 text-sky-600"
+                />
+              </div>
             </Button>
           </div>
         )}
