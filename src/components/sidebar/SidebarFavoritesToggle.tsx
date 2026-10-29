@@ -21,6 +21,7 @@ export const SidebarFavoritesToggle: FC<SidebarFavoritesToggleProps> = ({
       type="button"
       data-tag="sidebar-favorites"
       aria-label="Toggle favorites filter"
+      title="Toggle favorites filter"
       disabled={!isLicenseActivated}
       onClick={onToggle}
       className={clsx(

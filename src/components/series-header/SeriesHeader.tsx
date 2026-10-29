@@ -64,9 +64,9 @@ const getRatingChipClass = (rating: number): string => {
 const getProgressColor = (progress: number): string => {
   switch (true) {
     case progress >= 100:
-      return 'light:bg-amber-500 bg-amber-400';
-    case progress >= 70:
       return 'light:bg-green-600 bg-green-500/80';
+    case progress >= 70:
+      return 'light:bg-amber-500 bg-amber-400';
     case progress >= 30:
       return 'light:bg-yellow-600 bg-yellow-500/80';
     default:
